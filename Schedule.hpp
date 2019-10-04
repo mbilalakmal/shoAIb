@@ -3,6 +3,7 @@
 
 #include<vector>
 #include<list>
+#include<unordered_map>
 using namespace std;
 
 class CourseClass;
@@ -37,26 +38,34 @@ class Schedule{
 		
 		const vector<bool>& getConstraints() const {return constraints;}
 
+        const unordered_map<CourseClass*, int>&
+            getClasses() const {return classes;}
+
         const vector< list<CourseClass*> >& getSlots() const {return slots;}
 		
 	private:
 		
-        int             id;                     //unique & assigned auto-inc
+        int             id;             //unique & auto-inc
 
-		vector<                                 //day * time_slot * rooms
-        list<                                   //candidate course classes
-        CourseClass*> > slots;                  //time-space slots for course classes
+		vector<                         //day * time_slot * rooms
+        list<                           //candidate course classes
+        CourseClass*> > slots;          //time-space slots for course classes
 
         //need courseClass mapped to slots??
 
-        vector<bool>    constraints;            //used to calc fitness [true = that constraint is fulfilled]
+        unordered_map<
+        CourseClass*,
+        int>            classes;         //courseClass mapped to it's slot
+
+        vector<bool>    constraints;     //used to calc fitness [true = that constraint is fulfilled]
 
         //DNA part here
-        double          fitness;                //schedule's score for complying with constraints
+        double          fitness;         //schedule's score for complying with constraints
 
-        double          relativeFitness;        //fitness divided by the whole population's fitness
-        double          cumulativeProb;         //cum probability of being selected in fitness proportionate
+        double          relativeFitness; //fitness divided by the whole population's fitness
+        double          cumulativeProb;  //cum probability of being selected in fitness proportionate
 
+        //*Move these to Specifications*//
         // double          mutationRate;           //probability of mutation occuring
         // double          crossoverRate;          //probability of crossover occuring
         // int             mutationPoints;         //number of points moved by a mutation

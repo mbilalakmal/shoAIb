@@ -7,12 +7,25 @@ using namespace std;
 
 //default constructor
 Schedule::Schedule(){
+    
+    //resize slots vector
+    slots.resize(
+        //Weekdays * timeslots * rooms FROM Specs
+        1       //PLACEHOLDER!!
+    );
+
+    //resize constraints vector
+    constraints.resize(
+        //Number of hard+soft constraints FROM Specs
+        1       //PLACEHOLDER!!
+    );
 
 }
 
 //copy constructor
 Schedule::Schedule(const Schedule& schedule){
     //resize slots and constraints vectors
+    //*Maybe need a copy functions instead of this*//
 }
 
 //mutation occurs by randomly swapping some classes within a schedule

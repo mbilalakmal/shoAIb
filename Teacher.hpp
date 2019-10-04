@@ -32,11 +32,11 @@ class Teacher{
 	
 	private:
 
-	int		id;
-	string	name;
-	string	department;
+	int					id;				//unique identifier for the teacher
+	string				name;			//full name of the teacher
+	string				department;		//dept of the teacher
 	
-	list<CourseClass*> courseClasses;
+	list<CourseClass*>	courseClasses;	//courseClasses taught by the teacher
 };
 
 #endif

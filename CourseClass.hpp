@@ -64,10 +64,10 @@ class CourseClass{
 	
 	private:
 
-		int				id;			//unique & assigned auto-inc
-		int				strength;	//sum of strengths of sections
-		Course*			course;		//course reference
-		Teacher*		teacher;	//teacher reference
+		int				id;				//unique & auto-inc
+		int				strength;		//sum of strengths of sections
+		Course*			course;			//course reference
+		Teacher*		teacher;		//teacher reference
 
 		list<StudentSection*> sections;	//student sections included
 };

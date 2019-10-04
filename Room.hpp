@@ -48,20 +48,21 @@ class Room{
 		
 	private:
 		
-		int		id;				//unique & assigned auto-inc
-		int		capacity;		//50, 100
-		string	name;			//CR-10, R-109
-		string	building;		//CS, EE
-		int		floor;			//0, 1, 2(in EE)
+		int		id;					//unique & auto-inc (starting 0)!!
+		int		capacity;			//50, 100
+		string	name;				//CR-10, R-109
+		string	building;			//CS, EE
+		int		floor;				//0, 1, 2(in EE)
 
 		//facilities
 		/*
 		//need to add more like language lab and EE & BBA stuff
 		*/
-		bool	isComputerLab;			//true = is a computer lab
-		bool	isElectricalLab;		//true = is an electrical lab
-		bool	hasProjector;			//true = has a working projector
-		bool	hasAllInOne;			//true = has a viper in class
+		bool	isComputerLab;		//true = is a computer lab
+		bool	isElectricalLab;	//true = is an electrical lab
+		
+		bool	hasProjector;		//true = has a working projector
+		bool	hasAllInOne;		//true = has a viper in class
 		
 };
 

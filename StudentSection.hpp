@@ -7,8 +7,6 @@ using namespace std;
 
 class CourseClass;
 
-class Batch;
-
 //describes a student section which can be parent(A/B) OR child(GR-1/GR-2)
 class StudentSection{
 	
@@ -17,11 +15,13 @@ class StudentSection{
 		StudentSection(	int		id,
 						string&	name,
 						int		strength,
-						Batch*	batch)
+						int		batch,
+						string&	department)
 					:	id(id),
 						name(name),
 						strength(strength),
-						batch(batch){}
+						batch(batch),
+						department(department){}
 
 		void addCourseClass(CourseClass* courseClass){
 			courseClasses.push_back(courseClass);
@@ -33,20 +33,21 @@ class StudentSection{
 		
 		int getStrength() const {return strength;}
 		
+		int getBatch() const {return batch;}
+
+		const string& getDepartment() const {return department;}
+		
 		const list<CourseClass*>& getCourseClasses()
 		const	{return courseClasses;}
-
-		const Batch& getBatch() const {return *batch;}
 	
 	private:
 
-	int				id;					//unique & assigned auto-inc
-	string			name;				//A, C OR GR-1, GR-2
-	int				strength;			//Number of Students ~50
-	
-	list<CourseClass*> courseClasses;	//course classes the section is registered in
-
-	Batch*			batch;				//the batch which the section belongs to
+	int					id;					//unique identifier for the section
+	string				name;				//A, C OR GR-1, GR-2
+	int					strength;			//Number of Students ~50
+	int					batch;				//year of the batch's admission (2017)
+	string				department;			//dept of the section (CS, EE, SE)
+	list<CourseClass*>	courseClasses;	//course classes the section is registered in
 
 };
 
