@@ -4,6 +4,7 @@
 #include<vector>
 #include<list>
 #include<unordered_map>
+#include"CourseClass.hpp"
 using namespace std;
 
 class CourseClass;
@@ -38,24 +39,25 @@ class Schedule{
 		
 		const vector<bool>& getConstraints() const {return constraints;}
 
-        const unordered_map<CourseClass*, int>&
+        const unordered_map<CourseClass*, vector<int> >&
             getClasses() const {return classes;}
 
-        const vector< list<CourseClass*> >& getSlots() const {return slots;}
+        const vector< list< CourseClass* > >&
+            getSlots() const {return slots;}
 		
 	private:
 		
         int             id;             //unique & auto-inc
 
 		vector<                         //day * time_slot * rooms
-        list<                           //candidate course classes
-        CourseClass*> > slots;          //time-space slots for course classes
-
-        //need courseClass mapped to slots??
+            list<                           //candidate course classes
+        CourseClass*>
+        >               slots;          //time-space slots for course classes
 
         unordered_map<
-        CourseClass*,
-        int>            classes;         //courseClass mapped to it's slot
+            CourseClass*,
+            vector<int>
+        >               classes;         //courseClass mapped to it's slots
 
         vector<bool>    constraints;     //used to calc fitness [true = that constraint is fulfilled]
 
@@ -65,11 +67,6 @@ class Schedule{
         double          relativeFitness; //fitness divided by the whole population's fitness
         double          cumulativeProb;  //cum probability of being selected in fitness proportionate
 
-        //*Move these to Specifications*//
-        // double          mutationRate;           //probability of mutation occuring
-        // double          crossoverRate;          //probability of crossover occuring
-        // int             mutationPoints;         //number of points moved by a mutation
-        // int             crossoverPoints;        //number of points where parents' points will crossover
 		
 };
 

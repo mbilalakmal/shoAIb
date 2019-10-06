@@ -11,15 +11,16 @@ class Course{
 		Course(	int		id,
 				string&	courseCode,
 				string&	title,
-				int		creditHours,
+				int		duration,
 				string&	department,
-				string&	courseDiscipline,
+				string&	school,
 				bool	isCoreCourse)
 			:	id(id),
 				courseCode(courseCode),
 				title(title),
-				creditHours(creditHours),
+				duration(duration),
 				department(department),
+				school(school),
 				isCoreCourse(isCoreCourse){}
 		
 		int getId() const {return id;}
@@ -34,11 +35,13 @@ class Course{
 
 		const string& getShortTitle() const {return shortTitle;}
 
-		int getCreditHours() const {return creditHours;}
+		int getDuration() const {return duration;}
 
 		const vector<int>& getOfferedToBatches() const {return offeredToBatches;}
 
 		bool getIsCoreCourse() const {return isCoreCourse;}
+
+		bool getIsLabCourse() const {return isLabCourse;}
 		
 	private:
 		
@@ -48,9 +51,11 @@ class Course{
 		string		school;				//CS OR EE OR MG OR MT OR SS
 		string		title;				//Computer Architecture
 		string		shortTitle;			//CA, PROB, OS-LAB
-		int			creditHours;		//1, 3, 4
+		int			duration;		//1, 3, 4
 		vector<int>	offeredToBatches;	//2017 & 2018
 		bool		isCoreCourse;		//true = is a core course
+		bool		isLabCourse;		//true = duration needs to
+										//be continous and lab constraints apply
 
 		//facilities
 		/*

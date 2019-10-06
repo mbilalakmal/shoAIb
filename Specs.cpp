@@ -5,6 +5,10 @@
 #include<string>
 using namespace std;
 
+
+//declaration of global static instance of specification
+Specs Specs::instance;
+
 //destructor for specifications, deletes the stored
 //teachers, sections, courses, classes, and rooms
 Specs::~Specs(){

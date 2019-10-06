@@ -75,17 +75,45 @@ class Specs{
 		
 		int getNumberOfCourseClasses() const {return courseClasses.size();}	
 		
+		int getWeekDays() const {return	weekDays;}
+
+		int getTotalHours() const {return totalHours;}
+
+		int getMutationRate() const {return mutationRate;}
+
+		int getCrossoverRate() const {return crossoverRate;}
+
+		int getMutationPoints() const {return mutationPoints;}
+
+		int getCrossoverPoints() const {return crossoverPoints;}
+
 		bool getIsEmpty() const {return isEmpty;}
+
+		static const Specs& getInstance() { return instance;}
 	
 	private:
 		
+		static Specs 						instance;			//global static instance of specifications
+
 		unordered_map<int, Course*>			courses;            //courses mapped with their ids
 		unordered_map<int, Room*>			rooms;              //rooms mapped with their ids
 		unordered_map<int, Teacher*>		teachers;           //teachers mapped with their ids
 		unordered_map<int, StudentSection*>	sections;           //sections mapped with their ids
 		list<CourseClass*>					courseClasses;      //list of all parsed course classes
 		
-		bool isEmpty;     //true = specs haven't been parsed yet
+		//uni specific details weekdays hours etc
+
+		int		weekDays;		//number of days uni is open
+		int		totalHours;		//number of hours uni is open
+
+		//algo specific details tweak to check performance
+		double	mutationRate;	//probability of mutation occuring
+        double	crossoverRate;	//probability of crossover occuring
+        int		mutationPoints;		//number of points moved by a mutation
+        int		crossoverPoints;	//number of points where parents' points will crossover
+
+
+		bool	isEmpty;		//true = specs haven't been parsed yet
 };
 
 #endif
