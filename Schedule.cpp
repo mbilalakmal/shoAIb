@@ -151,16 +151,16 @@ void Schedule::mutation(){
             for(int j = 0; j < duration; j++){
 
                 //get list of classes at current slot
-                list<CourseClass*>& classes =
+                list<CourseClass*>& classesList =
                     slots[currentPosition+j];
 
                 //find target courseClass
                 //replace with std::find ==
-                for(auto it = classes.begin(); it != classes.end(); it++){
+                for(auto it = classesList.begin(); it != classesList.end(); it++){
                     //check if it is the target courseClass
                     if( (*it) == courseClass){
                         //erase the pointer NOT THE OBJECT from the list
-                        classes.erase( it );
+                        classesList.erase( it );
                         break;
                     }
                 }
@@ -215,6 +215,9 @@ void Schedule::mutation(){
 
         }
 
+        currentPositions.clear();
+        newPositions.clear();
+
     }
 
     //mutatedCourseClass:   'You took everything from me!'
@@ -259,13 +262,84 @@ void crossOver(Schedule& schedule1, Schedule& schedule2){
         crossOverPoints.insert(pointPosition);
     }
 
-    auto it1 = schedule1.classes.begin();
-    auto it2 = schedule2.classes.begin();
+    auto it1    = schedule1.classes.begin();
+    auto it2    = schedule2.classes.begin();
+
+    //get reference to both schedules' slots
+    auto slots1 = schedule1.getSlots();
+    auto slots2 = schedule2.getSlots();
+
+    bool swap   = rand() % 2;   //0 or 1
+
+    for(int i = 0; i < numberOfClasses; i++, it1++, it2++){
+
+        auto iterator = crossOverPoints.find(i);
+        //if i is a crossover point
+        if( iterator != crossOverPoints.end() ){
+            swap = !swap;
+        }
+
+        if(swap == false){
+            continue;
+        }
+        //crossover occurs here
+        
+        CourseClass *courseClass = it1->first;
+
+        int duration = courseClass->getCourse().getDuration();
+        vector<int> tempPositions;  tempPositions.resize(duration); //temporary vector used in two way swap of positions
+
+        //each iteration swaps(only removes) one slot in the slots entries of both schedules
+        for(int j = 0; j < duration; j++){
+
+            //get list of classes at sechedule 1 and 2 slot
+            list<CourseClass*>& classesList1 = slots1[
+                it1->second[j]
+            ];
+            list<CourseClass*>& classesList2 = slots2[
+                it2->second[j]
+            ];
+
+            //remove entry from schedule 1's slot
+            for(auto classesList1Iterator = classesList1.begin(); classesList1Iterator != classesList1.end(); classesList1Iterator++){
+                //check if it is the target courseClass
+                if( (*classesList1Iterator) == courseClass ){
+                    //remove pointer from this slot
+                    classesList1.erase( classesList1Iterator );
+                    break;
+                }
+            }
+
+            //remove entry from schedule 2's slots
+            for(auto classesList2Iterator = classesList2.begin(); classesList2Iterator != classesList2.end(); classesList2Iterator++){
+                //check if it's the target
+                if( (*classesList2Iterator) == courseClass ){
+                    classesList2.erase( classesList2Iterator );
+                    break;
+                }
+            }
 
 
+        }
 
-    for(const auto& point: crossOverPoints){
-        //swap classes at point
+        //swap entries in classes map to new positions
+        tempPositions   = it2->second;
+        it2->second     = it1->second;
+        it1->second     = tempPositions;
+
+        //now we need to insert courseclass pointers in the lists at these new slots
+        for(const auto& positions1: it1->second){
+            slots1[positions1].push_back(courseClass);
+        }
+        for(const auto& positions2: it2->second){
+            slots2[positions2].push_back(courseClass);
+        }
+
     }
+
+    schedule1.calculateFitness();
+    schedule2.calculateFitness();
+
+    //switcheroo complete
 
 }
