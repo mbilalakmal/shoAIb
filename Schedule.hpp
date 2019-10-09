@@ -15,6 +15,9 @@ class Schedule{
     //crossover occurs by randomly swapping some classes between two schedules
     friend void crossOver(Schedule&, Schedule&);
 
+    //swap function used in assignment operator and other
+    friend void swap(Schedule&, Schedule&);
+
 	public:
 		
         //default constructor
@@ -22,6 +25,12 @@ class Schedule{
 		
         //copy constructor
         Schedule(const Schedule&);
+
+        //assignment operator
+        Schedule& operator = (Schedule);
+        
+        //destructor
+        ~Schedule();
 
         //mutation occurs by randomly swapping some classes within a schedule
         void mutation();

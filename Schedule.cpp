@@ -110,6 +110,22 @@ Schedule::Schedule(const Schedule& schedule){
 
 }
 
+//assignment operator
+Schedule& Schedule::operator = (Schedule schedule){
+            //this schedule is swapped with temporary
+            swap(*this, schedule);
+            //swapped is returned while the old's lifecycle ends here
+            return *this;
+}
+
+//destructor
+Schedule::~Schedule(){
+    slots.clear();
+    classes.clear();
+    constraints.clear();
+    fitness = 0;
+}
+
 //static variable definition
 int Schedule::idCounter = 0;
 
@@ -476,4 +492,15 @@ void crossOver(Schedule& schedule1, Schedule& schedule2){
 
     //switcheroo complete
 
+}
+
+//swaps two schedules, used in ass operator
+void swap(Schedule& first, Schedule& second){
+    
+    using std::swap;
+
+    swap(first.classes, second.classes);
+    swap(first.slots, second.slots);
+    swap(first.constraints, second.constraints);
+    swap(first.fitness, second.fitness);
 }
