@@ -100,8 +100,14 @@ Schedule::Schedule(){
 
 //copy constructor
 Schedule::Schedule(const Schedule& schedule){
-    //resize slots and constraints vectors
-    //*Maybe need a copy functions instead of this*//
+    //copy rhs entries to this schedule
+
+    slots       = schedule.slots;
+    classes     = schedule.classes;
+
+    constraints = schedule.constraints;
+    fitness     = schedule.fitness;
+
 }
 
 //static variable definition
