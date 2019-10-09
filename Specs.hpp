@@ -75,6 +75,8 @@ class Specs{
 		
 		int getNumberOfCourseClasses() const {return courseClasses.size();}	
 		
+		int getNumberOfConstraints() const {return numberOfConstraints;}
+
 		int getWeekDays() const {return	weekDays;}
 
 		int getTotalHours() const {return totalHours;}
@@ -89,17 +91,20 @@ class Specs{
 
 		bool getIsEmpty() const {return isEmpty;}
 
-		static const Specs& getInstance() { return instance;}
+		static Specs& getInstance() { return instance;}
 	
 	private:
 		
-		static Specs 						instance;			//global static instance of specifications
+		static Specs	instance;		//global static instance of specifications
 
-		unordered_map<int, Course*>			courses;            //courses mapped with their ids
-		unordered_map<int, Room*>			rooms;              //rooms mapped with their ids
-		unordered_map<int, Teacher*>		teachers;           //teachers mapped with their ids
-		unordered_map<int, StudentSection*>	sections;           //sections mapped with their ids
-		list<CourseClass*>					courseClasses;      //list of all parsed course classes
+		unordered_map<int, Course*>			courses;		//courses mapped with their ids
+		unordered_map<int, Room*>			rooms;			//rooms mapped with their ids
+		unordered_map<int, Teacher*>		teachers;		//teachers mapped with their ids
+		unordered_map<int, StudentSection*>	sections;		//sections mapped with their ids
+		list<CourseClass*>					courseClasses;	//list of all parsed course classes
+
+		//number of constraints for each class(related to room, course, teacher, and section)
+		int		numberOfConstraints;
 		
 		//uni specific details weekdays hours etc
 

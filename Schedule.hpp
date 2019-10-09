@@ -47,19 +47,27 @@ class Schedule{
 		
 	private:
 		
-        int             id;             //unique & auto-inc
+        //static counter to generate ids for schedules
+        static int idCounter;
 
-		vector<                         //day * time_slot * rooms
-            list<                           //candidate course classes
-        CourseClass*>
-        >               slots;          //time-space slots for course classes
+        int id;             //unique & auto-inc
 
-        unordered_map<
-            CourseClass*,
-            vector<int>
-        >               classes;         //courseClass mapped to it's slots
+        //day * time_slot * rooms
+		vector< list< CourseClass* > >
+            slots;
 
-        vector<bool>    constraints;     //used to calc fitness [true = that constraint is fulfilled]
+        //courseClass mapped to it's slots
+        unordered_map< CourseClass*, vector< int > >
+            classes;
+
+        //used to calc fitness [true = that constraint is fulfilled]
+        vector<bool>    constraints;
+
+        //checks each constraint for all classes and put true/false in the vector
+        void checkConstraints();
+
+        //adds all the entries in the bool vector, multiplies, and returns a single fitness value
+        double addConstraintsWeights();
 
         //DNA part here
         double          fitness;         //schedule's score for complying with constraints

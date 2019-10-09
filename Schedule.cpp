@@ -13,14 +13,18 @@ Schedule::Schedule(){
     
     //resize slots vector
     slots.resize(
+        Specs::getInstance().getWeekDays *
+        Specs::getInstance().getTotalHours *
+        Specs::getInstance().getNumberOfRooms()
         //Weekdays * timeslots * rooms FROM Specs
-        1       //PLACEHOLDER!!
     );
 
     //resize constraints vector
     constraints.resize(
-        //Number of hard+soft constraints FROM Specs
-        1       //PLACEHOLDER!!
+        Specs::getInstance().getNumberOfCourseClasses() *
+        Specs::getInstance().getNumberOfConstraints(),
+        true
+        //Number of hard+soft constraints * classes FROM Specs
     );
 
     //get classes and place at random slots
@@ -80,7 +84,8 @@ Schedule::Schedule(){
 
         }
 
-        
+        //resize the array to zero for next class
+        positions.clear();
 
     }
 
@@ -98,6 +103,9 @@ Schedule::Schedule(const Schedule& schedule){
     //resize slots and constraints vectors
     //*Maybe need a copy functions instead of this*//
 }
+
+//static variable definition
+int Schedule::idCounter = 0;
 
 //mutation occurs by randomly swapping some classes within a schedule
 void Schedule::mutation(){
@@ -230,12 +238,132 @@ void Schedule::mutation(){
 
 //calculate score of schedule based on given constraints
 void Schedule::calculateFitness(){
-    //internally calls two functions
-    //first to check constraints and
-    //fill relevant boolean flags
-    //second to compute a total score
-    //by adding constraints with their appropriate weights
+    
+    fitness = 0;
 
+    //check each constraint for all classes and mark true/false
+    checkConstraints();
+
+    //add weighted contraints and return total fitness
+    fitness = addConstraintsWeights();
+
+}
+
+void Schedule::checkConstraints(){
+
+    int classCounter         = 0;
+
+    int numberOfRooms   = Specs::getInstance().getNumberOfRooms();
+    int totalHours      = Specs::getInstance().getTotalHours();
+    int spaceTimePerDay = totalHours * numberOfRooms;
+
+    //each iteration runs for one class of this schedule
+    for(const auto& classIterator: classes){
+
+        CourseClass* courseClass = classIterator.first;
+
+        //flags to see if both (a section clash and a teacher clash)
+        //are found to exit searching 
+        bool sectionFound = false, teacherFound = false;
+
+        //each iteration runs for one slot of this class
+        for(const auto& i: classIterator.second){
+
+            //get coordinates from position
+            int position    = i;
+            int day         = position / spaceTimePerDay;
+            int spaceTime   = position % spaceTimePerDay;
+            int roomID      = spaceTime / totalHours;
+            int time        = spaceTime % totalHours;
+
+            Room* room      = Specs::getInstance().getRoomById(roomID);
+
+            /*
+            Check for INHERENT::ROOM constraints
+            */
+
+            //no more than one class
+            if( slots[position].size() > 1 ){
+                constraints[classCounter + 0] = false;
+            }
+
+            //capacity at least equal to strength
+            if( room->getCapacity() >= courseClass->getStrength() ){
+                constraints[classCounter + 1] = false;
+            }
+
+            //theory/lab in theory/lab
+            if(
+                courseClass->getCourse().getNeedsElectricalLab() != room->getIsElectricalLab() ||
+                courseClass->getCourse().getNeedsComputerLab() != room->getIsComputerLab() ||
+                (
+                    courseClass->getCourse().getNeedsComputer() != room->getHasComputer() &&
+                    courseClass->getCourse().getNeedsComputer() == true
+                ) ||
+                (
+                    courseClass->getCourse().getNeedsProjector() != room->getHasProjector() &&
+                    courseClass->getCourse().getNeedsProjector() == true
+                )
+            ){
+                constraints[classCounter + 2] = false;
+            }
+
+            /*
+            check for INHERENT::SECTION & TEACHER constraints
+            */
+
+            //each iteration runs for one room 
+            for(int j = 0, dayTime = day * spaceTimePerDay + time;
+                j < numberOfRooms, ( !sectionFound || !teacherFound );
+                j++, dayTime += totalHours)
+            {
+
+                const list<CourseClass*>& ccList = slots[dayTime];
+
+                //for this room check for clash with the original class [section & teacher]
+
+                for(auto iterator = ccList.begin();
+                    iterator != ccList.end(), ( !sectionFound || !teacherFound );
+                    iterator++
+                ){
+                    //dont compare class with it self
+                    if( courseClass == (*iterator)){continue;}
+
+                    //if original class and this class has same teacher, it's a clash
+                    if(courseClass->teacherOverlaps( **iterator )){
+                        teacherFound = true;}
+
+                    //if original class and this class has common section(s), it's a clash
+                    if(courseClass->teacherOverlaps( **iterator )){
+                        teacherFound = true;}
+                }
+
+           }
+
+            //no other class for one section
+            if(sectionFound){
+                constraints[classCounter + 3] = false;
+            }
+
+            //no other class for one teacher
+            if(teacherFound){
+                constraints[classCounter + 4] = false;
+            }
+
+        }
+        
+        classCounter++;
+
+    }
+
+}
+
+double Schedule::addConstraintsWeights(){
+    double totalScore = 0;
+    for(int i = 0; i < constraints.size(); i++){
+        totalScore += (int) constraints[i];
+    }
+    return ( totalScore / Specs::getInstance().getNumberOfCourseClasses() );
 
 }
 

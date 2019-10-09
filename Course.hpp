@@ -41,7 +41,12 @@ class Course{
 
 		bool getIsCoreCourse() const {return isCoreCourse;}
 
-		bool getIsLabCourse() const {return isLabCourse;}
+		bool getIsLabCourse() const { return isLabCourse;}
+
+		bool getNeedsComputerLab() const {return needsComputerLab;}
+		bool getNeedsElectricalLab() const {return needsElectricalLab;}
+		bool getNeedsProjector() const {return needsProjector;}
+		bool getNeedsComputer() const {return needsComputer;}
 		
 	private:
 		
@@ -64,7 +69,7 @@ class Course{
 		bool		needsComputerLab;	//true = is a computer lab
 		bool		needsElectricalLab;	//true = is an electrical lab
 		bool		needsProjector;		//true = has a working projector
-		bool		needsAllInOne;		//true = has a viper in class
+		bool		needsComputer;		//true = has a viper in class
 	
 };
 

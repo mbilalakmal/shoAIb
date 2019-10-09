@@ -26,7 +26,7 @@ class Room{
 				isComputerLab(isComputerLab),
 				isElectricalLab(isElectricalLab),
 				hasProjector(hasProjector),
-				hasAllInOne(hasAllInOne){}
+				hasComputer(hasComputer){}
 		
 		int getId() const {return id;}
 		
@@ -40,11 +40,11 @@ class Room{
 
 		bool getIsComputerLab() const {return isComputerLab;}
 
-		bool getIsElectricLab() const {return isElectricalLab;}
+		bool getIsElectricalLab() const {return isElectricalLab;}
 
 		bool getHasProjector() const {return hasProjector;}
 
-		bool getHasAllInOne() const {return hasAllInOne;}
+		bool getHasComputer() const {return hasComputer;}
 		
 	private:
 		
@@ -62,7 +62,7 @@ class Room{
 		bool	isElectricalLab;	//true = is an electrical lab
 		
 		bool	hasProjector;		//true = has a working projector
-		bool	hasAllInOne;		//true = has a viper in class
+		bool	hasComputer;		//true = has a viper in class
 		
 };
 
