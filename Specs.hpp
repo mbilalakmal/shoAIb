@@ -26,41 +26,26 @@ class Specs{
 		
         //return pointer to a teacher OR NULL if teacher doesn't exist
 		Teacher* getTeacherById(int id){
-            //auto
-			unordered_map<int, Teacher*>:: iterator it =
-				teachers.find(id);
-			if(it != teachers.end()){	return it->second;}
-			else{	return	NULL;}
+			auto it = teachers.find( id );
+			return ( it != teachers.end() ? it->second: NULL );
 		}
 
         //return pointer to a section OR NULL if section doesn't exist
 		StudentSection* getSectionById(int id){
-            //auto
-			unordered_map<int, StudentSection*>:: iterator it =
-				sections.find(id);
-			if(it != sections.end()){
-				return it->second;}
-			else{	return	NULL;}
+            auto it = sections.find( id );
+			return ( it != sections.end() ? it->second: NULL );
 		}
 		
         //return pointer to a room OR NULL if room doesn't exist
 		Room* getRoomById(int id){
-            //auto
-			unordered_map<int, Room*>:: iterator it =
-				rooms.find(id);
-			if(it != rooms.end()){
-				return it->second;}
-			else{	return	NULL;}
+            auto it = rooms.find( id );
+			return ( it != rooms.end() ? it->second: NULL );
 		}
 		
         //return pointer to a course OR NULL if course doesn't exist
 		Course* getCourseById(int id){ 
-            //auto
-			unordered_map<int, Course*>:: iterator it =
-				courses.find(id);
-			if(it != courses.end()){
-				return it->second;}
-			else{	return	NULL;}
+            auto it = courses.find( id );
+			return ( it != courses.end() ? it->second: NULL );
 		}
 
 		int getNumberOfTeachers() const { return teachers.size();}
@@ -95,7 +80,8 @@ class Specs{
 	
 	private:
 		
-		static Specs	instance;		//global static instance of specifications
+		//global static instance of specifications
+		static Specs	instance;
 
 		unordered_map<int, Course*>			courses;		//courses mapped with their ids
 		unordered_map<int, Room*>			rooms;			//rooms mapped with their ids
@@ -108,17 +94,30 @@ class Specs{
 		
 		//uni specific details weekdays hours etc
 
-		int		weekDays;		//number of days uni is open
-		int		totalHours;		//number of hours uni is open
+		//number of days uni is open (5)
+		int		weekDays;
+		//number of hours uni is open
+		int		totalHours;
 
-		//algo specific details tweak to check performance
-		double	mutationRate;	//probability of mutation occuring
-        double	crossoverRate;	//probability of crossover occuring
-        int		mutationPoints;		//number of points moved by a mutation
-        int		crossoverPoints;	//number of points where parents' points will crossover
+		/*algo specific details tweak to check performance*/
 
+		//probability of mutation occuring
+		double	mutationRate;
 
-		bool	isEmpty;		//true = specs haven't been parsed yet
+		//probability of crossover occuring
+        double	crossoverRate;
+
+		//number of points moved by a mutation
+        int		mutationPoints;
+
+		//number of points where parents' points will crossover
+        int		crossoverPoints;
+
+		//maximum number of generations the algorithm can run
+		int		maxGenerations;
+
+		//true = specs haven't been parsed yet
+		bool	isEmpty;
 };
 
 #endif
