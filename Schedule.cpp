@@ -310,7 +310,7 @@ void Schedule::checkConstraints(){
             }
 
             //capacity at least equal to strength
-            if( room->getCapacity() >= courseClass->getStrength() ){
+            if( room->getCapacity() < courseClass->getStrength() ){
                 constraints[classCounter + 1] = false;
             }
 
@@ -356,8 +356,8 @@ void Schedule::checkConstraints(){
                         teacherFound = true;}
 
                     //if original class and this class has common section(s), it's a clash
-                    if(courseClass->teacherOverlaps( **iterator )){
-                        teacherFound = true;}
+                    if(courseClass->sectionsOverlap( **iterator )){
+                        sectionFound = true;}
                 }
 
            }
@@ -382,10 +382,15 @@ void Schedule::checkConstraints(){
 
 double Schedule::addConstraintsWeights(){
     double totalScore = 0;
-    for(int i = 0; i < constraints.size(); i++){
-        totalScore += (int) constraints[i];
+    // for(int i = 0; i < constraints.size(); i++){
+    //     totalScore += (int) constraints[i];
+    // }
+    for(auto& const i: constraints){
+        totalScore += (int) i;
     }
-    return ( totalScore / Specs::getInstance().getNumberOfCourseClasses() );
+    //fitness returned will be between 0 to 1 inclusive
+    return ( totalScore /( Specs::getInstance().getNumberOfCourseClasses() *
+        Specs::getInstance().getNumberOfConstraints() ) );
 
 }
 
