@@ -39,3 +39,4 @@ $RECYCLE.BIN/
 *.txt
 
 .vscode/
+.vscode/settings.json

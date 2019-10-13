@@ -9,7 +9,7 @@ using namespace std;
 //describes a whole week's schedule in time-space slots occupied by course classes
 
 //default constructor
-Schedule::Schedule(){
+Schedule::Schedule(int seed){
     
     //resize slots vector
     slots.resize(
@@ -130,7 +130,7 @@ Schedule::~Schedule(){
 int Schedule::idCounter = 0;
 
 //mutation occurs by randomly swapping some classes within a schedule
-void Schedule::mutation(){
+void Schedule::mutation(int seed){
 
     //coin flip // dice roll // rand() call
     if( rand() % 100 > Specs::getInstance().getMutationRate() ){
@@ -396,7 +396,7 @@ double Schedule::addConstraintsWeights(){
 //this is a little different from typical crossover implementations as
 //no new offsprings are created. However it still works (uncited)
 //might have to implement another
-void crossOver(Schedule& schedule1, Schedule& schedule2){
+void crossOver(Schedule& schedule1, Schedule& schedule2, int){
 
     //coin flip // dice roll // rand() call
     if( rand() % 100 > Specs::getInstance().getCrossoverRate() ){

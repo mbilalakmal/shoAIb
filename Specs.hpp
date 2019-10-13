@@ -74,6 +74,10 @@ class Specs{
 
 		int getCrossoverPoints() const {return crossoverPoints;}
 
+		int getPopulationSize() const {return populationSize;}
+
+		int getMaxGenerations() const {return maxGenerations;}
+
 		bool getIsEmpty() const {return isEmpty;}
 
 		static Specs& getInstance() { return instance;}
@@ -112,6 +116,9 @@ class Specs{
 
 		//number of points where parents' points will crossover
         int		crossoverPoints;
+
+		//number of chromosomes in one population
+		int		populationSize;
 
 		//maximum number of generations the algorithm can run
 		int		maxGenerations;

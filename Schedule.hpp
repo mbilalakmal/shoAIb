@@ -13,7 +13,7 @@ class CourseClass;
 class Schedule{
 	
     //crossover occurs by randomly swapping some classes between two schedules
-    friend void crossOver(Schedule&, Schedule&);
+    friend void crossOver(Schedule&, Schedule&, int);
 
     //swap function used in assignment operator and other
     friend void swap(Schedule&, Schedule&);
@@ -27,7 +27,7 @@ class Schedule{
         double  cumulativeProb;
 
         //default constructor
-		Schedule();
+		Schedule(int);
 		
         //copy constructor
         Schedule(const Schedule&);
@@ -39,7 +39,7 @@ class Schedule{
         ~Schedule();
 
         //mutation occurs by randomly swapping some classes within a schedule
-        void mutation();
+        void mutation(int);
 
         //calculate score of schedule based on given constraints
         void calculateFitness();
