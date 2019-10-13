@@ -260,8 +260,6 @@ void Schedule::mutation(){
 
 //calculate score of schedule based on given constraints
 void Schedule::calculateFitness(){
-    
-    fitness = 0;
 
     //check each constraint for all classes and mark true/false
     checkConstraints();
@@ -389,7 +387,7 @@ double Schedule::addConstraintsWeights(){
         totalScore += (int) i;
     }
     //fitness returned will be between 0 to 1 inclusive
-    return ( totalScore /( Specs::getInstance().getNumberOfCourseClasses() *
+    return ( (double) totalScore /( Specs::getInstance().getNumberOfCourseClasses() *
         Specs::getInstance().getNumberOfConstraints() ) );
 
 }

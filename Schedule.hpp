@@ -20,6 +20,12 @@ class Schedule{
 
 	public:
 		
+        //fitness divided by the whole population's fitness
+        double  relativeFitness;
+
+        //cum probability of being selected in fitness proportionate
+        double  cumulativeProb;
+
         //default constructor
 		Schedule();
 		
@@ -40,11 +46,7 @@ class Schedule{
 
 		int getId() const {return id;}
 		
-		int getFitness() const {return fitness;}
-
-		int getRelativeFitness() const {return relativeFitness;}
-		
-		int getCumulativeProb() const {return cumulativeProb;}
+		double getFitness() const {return fitness;}
 		
 		const vector<bool>& getConstraints() const {return constraints;}
 
@@ -80,10 +82,6 @@ class Schedule{
 
         //DNA part here
         double          fitness;         //schedule's score for complying with constraints
-
-        double          relativeFitness; //fitness divided by the whole population's fitness
-        double          cumulativeProb;  //cum probability of being selected in fitness proportionate
-
 		
 };
 
