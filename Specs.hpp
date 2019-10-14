@@ -43,7 +43,7 @@ class Specs{
 		}
 		
         //return pointer to a course OR NULL if course doesn't exist
-		Course* getCourseById(int id){ 
+		Course* getCourseById(int id){
             auto it = courses.find( id );
 			return ( it != courses.end() ? it->second: NULL );
 		}

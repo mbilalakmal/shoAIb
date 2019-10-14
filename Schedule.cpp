@@ -94,6 +94,9 @@ Schedule::Schedule(int seed){
     //calculate fitness for newly created
     calculateFitness();
 
+    relativeFitness = 0.0;
+    cumulativeProb = 0.0;
+
     //welcome to the world
 
 }
@@ -251,7 +254,7 @@ void Schedule::mutation(int seed){
     }
 
     //mutatedCourseClass:   'You took everything from me!'
-    //GeneticAlgorithm:     'I don't even know ;
+    //GeneticAlgorithm:     'I don't even know you'
 
     //calc new fitness after mutation
     calculateFitness();
