@@ -41,11 +41,17 @@ Specs::~Specs(){
 void Specs::parseFile(string& fileName) {
 
     //clear all the maps
+	courseClasses.clear();
     teachers.clear();
     sections.clear();
     courses.clear();
     rooms.clear();
-    courseClasses.clear();
 
-    //take input
+    //take input from json here
+
+	/*
+	maybe call one function for each user-defined type
+	parseCourses, parseTeachers, parseSections, parseRooms
+	then parseCourseClasses which will link actual pointers using IDs
+	*/
 }

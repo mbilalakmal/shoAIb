@@ -14,6 +14,14 @@ class Teacher;
 class StudentSection;
 
 
+/*
+The static instance is responsible for 
+1. reading from input json file(s)
+2. creating courses, teachers, sections, and rooms
+3. creating courseclasses with existing courses, teachers, and sections
+4. providing read-access to these resources to schedule and algorithm
+*/
+
 //describes the specifications of courses, rooms, classes, teachers, and sections
 class Specs{
 	public:
