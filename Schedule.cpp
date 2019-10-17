@@ -114,7 +114,7 @@ Schedule::Schedule(const Schedule& schedule){
 
 }
 
-//assignment operator
+//copy assignment operator
 Schedule& Schedule::operator = (Schedule schedule){
             //this schedule is swapped with temporary
             swap(*this, schedule);
@@ -517,16 +517,12 @@ void swap(Schedule& first, Schedule& second){
     swap(first.fitness, second.fitness);
 }
 
-/*comparator functions for schedule's fitness, used in algorithm.cpp(selection)
+/*comparator function for schedule's fitness, used in algorithm.cpp(selection)
 std::sort will use them to sort best and worst for ( elitism and weeding )
+This is a non-friend non-member function to ensure safety and encapsulation
 */
-
-//return whether lhs < rhs
-bool operator < (Schedule const &schedule1, Schedule const &schedule2) { 
-         return schedule1.getFitness() < schedule2.getFitness();
-}
-
-//return whether lhs > rhs
-bool operator > (Schedule const &schedule1, Schedule const &schedule2) { 
-         return schedule1.getFitness() > schedule2.getFitness();
+bool compareSchedules(Schedule const *schedule1, Schedule const *schedule2){
+    return (
+        schedule1->getFitness() < schedule2->getFitness()
+    );
 }

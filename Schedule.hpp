@@ -69,7 +69,10 @@ class Schedule{
             classes;
 
         //used to calc fitness [true = that constraint is fulfilled]
-        vector<bool>    constraints;
+        vector<bool> constraints;
+
+        //schedule's score for complying with constraints
+        double fitness;
 
         //calculate score of schedule based on given constraints
         void calculateFitness();
@@ -79,9 +82,6 @@ class Schedule{
 
         //adds all the entries in the bool vector, multiplies, and returns a single fitness value
         double addConstraintsWeights();
-
-        //DNA part here
-        double          fitness;         //schedule's score for complying with constraints
 		
 };
 
