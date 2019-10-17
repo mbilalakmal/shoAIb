@@ -86,6 +86,10 @@ class Specs{
 
 		int getMaxGenerations() const {return maxGenerations;}
 
+		int getBestSize() const {return bestSize;}
+
+		int getWorstSize() const {return worstSize;}
+
 		bool getIsEmpty() const {return isEmpty;}
 
 		static Specs& getInstance() { return instance;}
@@ -130,6 +134,13 @@ class Specs{
 
 		//maximum number of generations the algorithm can run
 		int		maxGenerations;
+
+		//number of best chromosomes to track
+		int		bestSize;
+
+		//number of worst chromosomes to track
+		int		worstSize;
+
 
 		//true = specs haven't been parsed yet
 		bool	isEmpty;
