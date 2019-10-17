@@ -1,6 +1,7 @@
 #include"Schedule.hpp"
 #include"Specs.hpp"
 #include"Room.hpp"
+#include"Random.hpp"
 #include<vector>
 #include<list>
 #include<unordered_set>
@@ -9,7 +10,7 @@ using namespace std;
 //describes a whole week's schedule in time-space slots occupied by course classes
 
 //default constructor
-Schedule::Schedule(int seed){
+Schedule::Schedule(int &seed){
     
     //resize slots vector
     slots.resize(
@@ -47,9 +48,9 @@ Schedule::Schedule(int seed){
 
         if(it->getCourse().getIsLabCourse()){
         
-            day         =   rand() % weekDays;  //replace rand!!
-            room        =   rand() % numberOfRooms;
-            time        =   rand() % ( totalHours - duration + 1 ); //wajeeh bhai
+            day         = i4_uniform_ab(0, weekDays - 1, seed);
+            room        = i4_uniform_ab(0, numberOfRooms - 1, seed);
+            time        = i4_uniform_ab(0, totalHours - duration, seed);
             
             //actual index for the vector[day*space*time]
             position    =   time +
@@ -68,9 +69,9 @@ Schedule::Schedule(int seed){
         else{
 
             for(int i = 0; i < duration; i++){
-                day         =   rand() % weekDays;
-                room        =   rand() % numberOfRooms;
-                time        =   rand() % (totalHours);
+                day         = i4_uniform_ab(0, weekDays - 1, seed);
+                room        = i4_uniform_ab(0, numberOfRooms - 1, seed);
+                time        = i4_uniform_ab(0, totalHours - 1, seed);
 
                 position    =   time +
                                 totalHours * room +
@@ -133,10 +134,11 @@ Schedule::~Schedule(){
 int Schedule::idCounter = 0;
 
 //mutation occurs by randomly swapping some classes within a schedule
-void Schedule::mutation(int seed){
+void Schedule::mutation(int &seed){
 
-    //coin flip // dice roll // rand() call
-    if( rand() % 100 > Specs::getInstance().getMutationRate() ){
+    //coin flip
+    double random = r8_uniform_ab(0.0, 1.0, seed);
+    if ( random > Specs::getInstance().getMutationRate() ){
         return;
     }
 
@@ -153,7 +155,8 @@ void Schedule::mutation(int seed){
     for(int i = 0; i < Specs::getInstance().getMutationPoints(); i++){
 
         //pick random class
-        mutationClassPosition = rand() % numberOfClasses;
+        mutationClassPosition = i4_uniform_ab(0, numberOfClasses - 1, seed);
+        
         auto it = classes.begin();
         //move iterator to mutationPosition
         advance(it, mutationClassPosition);
@@ -172,9 +175,10 @@ void Schedule::mutation(int seed){
             currentPosition = it->second[0];
 
             //pick rando day, room, and time
-            day = rand() % weekDays;
-            room = rand() % numberOfRooms;
-            time = rand() % (totalHours - duration + 1);
+            day     = i4_uniform_ab(0, weekDays - 1, seed);
+            room    = i4_uniform_ab(0, numberOfRooms - 1, seed);
+            time    = i4_uniform_ab(0, totalHours - duration, seed);
+
             newPosition =   time +
                             totalHours * room +
                             totalHours * numberOfRooms * day;
@@ -230,9 +234,10 @@ void Schedule::mutation(int seed){
                 }
 
                 //pick rando day, room, and time
-                day = rand() % weekDays;
-                room = rand() % numberOfRooms;
-                time = rand() % (totalHours);
+                day     = i4_uniform_ab(0, weekDays - 1, seed);
+                room    = i4_uniform_ab(0, numberOfRooms - 1, seed);
+                time    = i4_uniform_ab(0, totalHours - 1, seed);
+                
                 newPosition =   time +
                             totalHours * room +
                             totalHours * numberOfRooms * day;
@@ -399,10 +404,11 @@ double Schedule::addConstraintsWeights(){
 //this is a little different from typical crossover implementations as
 //no new offsprings are created. However it still works (uncited)
 //might have to implement another
-void crossOver(Schedule& schedule1, Schedule& schedule2, int){
+void crossOver(Schedule& schedule1, Schedule& schedule2, int &seed){
 
-    //coin flip // dice roll // rand() call
-    if( rand() % 100 > Specs::getInstance().getCrossoverRate() ){
+    //coin flip
+    double random = r8_uniform_ab(0, 1.0, seed);
+    if( random > Specs::getInstance().getCrossoverRate() ){
         return;
     }
 
@@ -414,7 +420,7 @@ void crossOver(Schedule& schedule1, Schedule& schedule2, int){
     while ( crossOverPoints.size() < Specs::getInstance().getCrossoverPoints() )
     {
         //a set only inserts new elements so uniqueness is guaranteed
-        int pointPosition = rand() % numberOfClasses;
+        int pointPosition = i4_uniform_ab(0, numberOfClasses - 1, seed);
         crossOverPoints.insert(pointPosition);
     }
 
@@ -425,7 +431,7 @@ void crossOver(Schedule& schedule1, Schedule& schedule2, int){
     auto slots1 = schedule1.getSlots();
     auto slots2 = schedule2.getSlots();
 
-    bool swap   = rand() % 2;   //0 or 1
+    bool swap   = i4_uniform_ab(0, 1, seed);    //0 OR 1
 
     for(int i = 0; i < numberOfClasses; i++, it1++, it2++){
 
@@ -509,4 +515,18 @@ void swap(Schedule& first, Schedule& second){
     swap(first.slots, second.slots);
     swap(first.constraints, second.constraints);
     swap(first.fitness, second.fitness);
+}
+
+/*comparator functions for schedule's fitness, used in algorithm.cpp(selection)
+std::sort will use them to sort best and worst for ( elitism and weeding )
+*/
+
+//return whether lhs < rhs
+bool operator < (Schedule const &schedule1, Schedule const &schedule2) { 
+         return schedule1.getFitness() < schedule2.getFitness();
+}
+
+//return whether lhs > rhs
+bool operator > (Schedule const &schedule1, Schedule const &schedule2) { 
+         return schedule1.getFitness() > schedule2.getFitness();
 }
