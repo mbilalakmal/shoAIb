@@ -16,8 +16,7 @@ class Room{
 				int		floor,
 				bool	isComputerLab,
 				bool	isElectricalLab,
-				bool	hasProjector,
-				bool	hasAllInOne)
+				bool	hasComputer)
 			:	id(id),
 				name(name),
 				capacity(capacity),
@@ -25,7 +24,6 @@ class Room{
 				floor(floor),
 				isComputerLab(isComputerLab),
 				isElectricalLab(isElectricalLab),
-				hasProjector(hasProjector),
 				hasComputer(hasComputer){}
 		
 		int getId() const {return id;}
@@ -42,8 +40,6 @@ class Room{
 
 		bool getIsElectricalLab() const {return isElectricalLab;}
 
-		bool getHasProjector() const {return hasProjector;}
-
 		bool getHasComputer() const {return hasComputer;}
 		
 	private:
@@ -54,14 +50,10 @@ class Room{
 		string	building;			//CS, EE
 		int		floor;				//0, 1, 2(in EE)
 
-		//facilities
-		/*
-		//need to add more like language lab and EE & BBA stuff
-		*/
 		bool	isComputerLab;		//true = is a computer lab
 		bool	isElectricalLab;	//true = is an electrical lab
 		
-		bool	hasProjector;		//true = has a working projector
+		// bool	hasProjector;		//Not needed
 		bool	hasComputer;		//true = has a viper in class
 		
 };
