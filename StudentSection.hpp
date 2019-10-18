@@ -23,10 +23,15 @@ class StudentSection{
 						batch(batch),
 						department(department){}
 
+		~StudentSection(){
+			//does not delete the objects
+			courseClasses.clear();
+		}
+
 		void addCourseClass(CourseClass* courseClass){
 			courseClasses.push_back(courseClass);
 		}
-		
+
 		int getId() const {return id;}
 		
 		const string& getName() const {return name;}
@@ -42,12 +47,14 @@ class StudentSection{
 	
 	private:
 
-	int					id;					//unique identifier for the section
-	string				name;				//A, C OR GR-1, GR-2
-	int					strength;			//Number of Students ~50
-	int					batch;				//year of the batch's admission (2017)
-	string				department;			//dept of the section (CS, EE, SE)
-	list<CourseClass*>	courseClasses;	//course classes the section is registered in
+	int		id;			//unique identifier for the section
+	string	name;		//A, C OR GR-1, GR-2
+	int		strength;	//Number of Students ~50
+	int		batch;		//year of the batch's admission (2017)
+	string	department;	//dept of the section (CS, EE, SE)
+
+	//course classes the section is enrolled in
+	list<CourseClass*>	courseClasses;	
 
 };
 
