@@ -58,7 +58,7 @@ class CourseClass{
 			return teacher->getId() == courseClass.teacher->getId();
 		}
 
-		int getId() {return id;}
+		int getId() const {return id;}
 
 		int getStrength() const {return strength;}
 		
