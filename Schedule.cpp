@@ -48,9 +48,9 @@ Schedule::Schedule(int &seed){
 
         if(it->getCourse().getIsLabCourse()){
         
-            day         = i4_uniform_ab(0, weekDays - 1, seed);
-            room        = i4_uniform_ab(0, numberOfRooms - 1, seed);
-            time        = i4_uniform_ab(0, totalHours - duration, seed);
+            day     = i4_uniform_ab(0, weekDays - 1, seed);
+            room    = i4_uniform_ab(0, numberOfRooms - 1, seed);
+            time    = i4_uniform_ab(0, totalHours - duration, seed);
             
             //actual index for the vector[day*space*time]
             position    =   time +
@@ -98,8 +98,6 @@ Schedule::Schedule(int &seed){
     relativeFitness = 0.0;
     cumulativeProb = 0.0;
 
-    //welcome to the world
-
 }
 
 //copy constructor
@@ -129,9 +127,6 @@ Schedule::~Schedule(){
     constraints.clear();
     fitness = 0;
 }
-
-//static variable definition
-int Schedule::idCounter = 0;
 
 //mutation occurs by randomly swapping some classes within a schedule
 void Schedule::mutation(int &seed){
@@ -195,7 +190,7 @@ void Schedule::mutation(int &seed){
                 //replace with std::find ==
                 for(auto it = classesList.begin(); it != classesList.end(); it++){
                     //check if it is the target courseClass
-                    if( (*it) == courseClass){
+                    if( (*it)->getId() == courseClass->getId() ){
                         //erase the pointer NOT THE OBJECT from the list
                         classesList.erase( it );
                         break;
@@ -227,7 +222,7 @@ void Schedule::mutation(int &seed){
 
                 //find target courseClass
                 for(auto it = classes.begin(); it != classes.end(); it++){
-                    if( (*it) == courseClass ){
+                    if( (*it)->getId() == courseClass->getId() ){
                         classes.erase( it );
                         break;
                     }
@@ -258,9 +253,6 @@ void Schedule::mutation(int &seed){
 
     }
 
-    //mutatedCourseClass:   'You took everything from me!'
-    //GeneticAlgorithm:     'I don't even know you'
-
     //calc new fitness after mutation
     calculateFitness();
 
@@ -288,7 +280,8 @@ void Schedule::checkConstraints(){
     //each iteration runs for one class of this schedule
     for(const auto& classIterator: classes){
 
-        CourseClass* courseClass = classIterator.first;
+        //get const pointer to course class
+        const CourseClass* courseClass = classIterator.first;
 
         //flags to see if both (a section clash and a teacher clash)
         //are found to exit searching 
@@ -325,12 +318,8 @@ void Schedule::checkConstraints(){
                 courseClass->getCourse().getNeedsElectricalLab() != room->getIsElectricalLab() ||
                 courseClass->getCourse().getNeedsComputerLab() != room->getIsComputerLab() ||
                 (
-                    courseClass->getCourse().getNeedsComputer() != room->getHasComputer() &&
-                    courseClass->getCourse().getNeedsComputer() == true
-                ) ||
-                (
-                    courseClass->getCourse().getNeedsProjector() != room->getHasProjector() &&
-                    courseClass->getCourse().getNeedsProjector() == true
+                    courseClass->getTeacher().getNeedsComputer() != room->getHasComputer() &&
+                    courseClass->getTeacher().getNeedsComputer() == true
                 )
             ){
                 constraints[classCounter + 2] = false;
@@ -355,7 +344,7 @@ void Schedule::checkConstraints(){
                     iterator++
                 ){
                     //dont compare class with it self
-                    if( courseClass == (*iterator)){continue;}
+                    if( courseClass->getId() == (*iterator)->getId() ){continue;}
 
                     //if original class and this class has same teacher, it's a clash
                     if(courseClass->teacherOverlaps( **iterator )){
@@ -388,10 +377,10 @@ void Schedule::checkConstraints(){
 
 double Schedule::addConstraintsWeights(){
     double totalScore = 0;
-    // for(int i = 0; i < constraints.size(); i++){
-    //     totalScore += (int) constraints[i];
-    // }
-    for(auto& const i: constraints){
+    for(int i = 0; i < constraints.size(); i++){
+        totalScore += (int) constraints[i];
+    }
+    for(const auto& i: constraints){
         totalScore += (int) i;
     }
     //fitness returned will be between 0 to 1 inclusive
@@ -465,7 +454,7 @@ void crossOver(Schedule& schedule1, Schedule& schedule2, int &seed){
             //remove entry from schedule 1's slot
             for(auto classesList1Iterator = classesList1.begin(); classesList1Iterator != classesList1.end(); classesList1Iterator++){
                 //check if it is the target courseClass
-                if( (*classesList1Iterator) == courseClass ){
+                if( (*classesList1Iterator)->getId() == courseClass->getId() ){
                     //remove pointer from this slot
                     classesList1.erase( classesList1Iterator );
                     break;
@@ -475,7 +464,7 @@ void crossOver(Schedule& schedule1, Schedule& schedule2, int &seed){
             //remove entry from schedule 2's slots
             for(auto classesList2Iterator = classesList2.begin(); classesList2Iterator != classesList2.end(); classesList2Iterator++){
                 //check if it's the target
-                if( (*classesList2Iterator) == courseClass ){
+                if( (*classesList2Iterator)->getId() == courseClass->getId() ){
                     classesList2.erase( classesList2Iterator );
                     break;
                 }

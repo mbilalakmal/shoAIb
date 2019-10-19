@@ -40,8 +40,6 @@ class Schedule{
 
         //mutation occurs by randomly swapping some classes within a schedule
         void mutation(int&);
-
-		int getId() const {return id;}
 		
 		double getFitness() const {return fitness;}
 		
@@ -54,11 +52,6 @@ class Schedule{
             getSlots() const {return slots;}
 		
 	private:
-		
-        //static counter to generate ids for schedules
-        static int idCounter;
-
-        int id;             //unique & auto-inc
 
         //day * time_slot * rooms
 		vector< list< CourseClass* > >
