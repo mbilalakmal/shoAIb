@@ -13,14 +13,13 @@ class CourseClass{
 	
 	public:
 		
-		CourseClass(int			id,
-					Teacher*	teacher,
-					Course*		course)
-				:	id(id),
-					teacher(teacher),
-					course(course),
-					strength(0){
-			
+		CourseClass(	Teacher*	teacher,
+						Course*		course)
+					:	id(nextId++),
+						teacher(teacher),
+						course(course),
+						strength(0){
+				
 			//add this course class to the given teacher's assigned CCs
 			teacher->addCourseClass(this);
 		}
@@ -68,8 +67,13 @@ class CourseClass{
 
 		const list<StudentSection*>& getSections() const
 			{return sections;}
+
+		//Reset ID counter to 0
+		static void RestartIDs() {nextId = 0;}
 	
 	private:
+
+		static int	nextId;		//CCId counter to assign IDs
 
 		int			id;			//unique & auto-inc
 		int			strength;	//sum of strengths of sections
@@ -79,5 +83,8 @@ class CourseClass{
 		//parent sections included in this course class
 		list<StudentSection*> sections;
 };
+
+//Init ID counter
+int CourseClass::nextId = 0;
 
 #endif
