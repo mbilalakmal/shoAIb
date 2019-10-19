@@ -9,15 +9,14 @@ class Room{
 	
 	public:
 		
-		Room(	int		id,
-				int		capacity,
+		Room(	int		capacity,
 				string&	name,
 				string&	building,
 				int		floor,
 				bool	isComputerLab,
 				bool	isElectricalLab,
 				bool	hasComputer)
-			:	id(id),
+			:	id(nextId++),
 				name(name),
 				capacity(capacity),
 				building(building),
@@ -25,7 +24,7 @@ class Room{
 				isComputerLab(isComputerLab),
 				isElectricalLab(isElectricalLab),
 				hasComputer(hasComputer){}
-		
+
 		int getId() const {return id;}
 		
 		int getCapacity() const {return capacity;}
@@ -41,9 +40,14 @@ class Room{
 		bool getIsElectricalLab() const {return isElectricalLab;}
 
 		bool getHasComputer() const {return hasComputer;}
+
+		//Reset ID counter to 0
+		static void RestartIDs() {nextId = 0;}
 		
 	private:
 		
+		static int nextId;			//RoomId counter to assign IDs
+
 		int		id;					//unique & auto-inc (starting 0)!!
 		int		capacity;			//50, 100
 		string	name;				//CR-10, R-109
@@ -57,5 +61,8 @@ class Room{
 		bool	hasComputer;		//true = has a viper in class
 		
 };
+
+//Init ID counter
+int Room::nextId = 0;
 
 #endif
