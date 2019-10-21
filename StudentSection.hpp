@@ -7,7 +7,7 @@ using namespace std;
 
 class CourseClass;
 
-//describes a student section which can be parent(A/B) OR child(GR-1/GR-2)
+//describes an atomic student section (A1 OR C2)
 class StudentSection{
 	
 	public:
@@ -48,8 +48,8 @@ class StudentSection{
 	private:
 
 	int		id;			//unique identifier for the section
-	string	name;		//A, C OR GR-1, GR-2
-	int		strength;	//Number of Students ~50
+	string	name;		//A1, C2, etc
+	int		strength;	//Number of Students ~25
 	int		batch;		//year of the batch's admission (2017)
 	string	department;	//dept of the section (CS, EE, SE)
 
