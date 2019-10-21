@@ -42,7 +42,7 @@ class Room{
 		bool getHasComputer() const {return hasComputer;}
 
 		//Reset ID counter to 0
-		static void RestartIDs() {nextId = 0;}
+		static void restartIDs() {nextId = 0;}
 		
 	private:
 		

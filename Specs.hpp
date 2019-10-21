@@ -29,7 +29,12 @@ class Specs{
 		Specs() : isEmpty(true){}
 		~Specs();
 		
-        //read the file and parse objects
+		/*
+		Either a single parseFile functions for all types or
+		individual functions for each type
+		*/
+
+        //read the file and parse objects from JSON
 		void parseFile(string&);
 		
         //return pointer to a teacher OR NULL if teacher doesn't exist
@@ -99,6 +104,12 @@ class Specs{
 		//global static instance of specifications
 		static Specs	instance;
 
+		/*
+			void parseRooms(string&);
+		*/
+
+		
+
 		unordered_map<int, Course*>			courses;		//courses mapped with their ids
 		unordered_map<int, Room*>			rooms;			//rooms mapped with their ids
 		unordered_map<int, Teacher*>		teachers;		//teachers mapped with their ids
@@ -119,25 +130,18 @@ class Specs{
 
 		//probability of mutation occuring
 		double	mutationRate;
-
 		//probability of crossover occuring
         double	crossoverRate;
-
 		//number of points moved by a mutation
         int		mutationPoints;
-
 		//number of points where parents' points will crossover
         int		crossoverPoints;
-
 		//number of chromosomes in one population
 		int		populationSize;
-
 		//maximum number of generations the algorithm can run
 		int		maxGenerations;
-
 		//number of best chromosomes to track
 		int		bestSize;
-
 		//number of worst chromosomes to track
 		int		worstSize;
 

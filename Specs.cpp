@@ -47,11 +47,22 @@ void Specs::parseFile(string& fileName) {
     courses.clear();
     rooms.clear();
 
+	Room::restartIDs();
+
     //take input from json here
 
 	/*
-	maybe call one function for each user-defined type
-	parseCourses, parseTeachers, parseSections, parseRooms
-	then parseCourseClasses which will link actual pointers using IDs
+	In Rooms.JSON
+	for loop
+		Room* newRoom = JSON_to_CPP_Object();
+
+		rooms.emplace()	//proper syntax OR
+		rooms.insert( pair<int, Room*>(newRoom->getId(), newRoom) );
+	*/
+
+	/*
+	maybe call functions for each user-defined type
+	courses, rooms, sections, and teachers,
+	then CourseClasses which will link actual pointers using IDs
 	*/
 }
