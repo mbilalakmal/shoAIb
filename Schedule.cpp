@@ -318,8 +318,8 @@ void Schedule::checkConstraints(){
                 courseClass->getCourse().getNeedsElectricalLab() != room->getIsElectricalLab() ||
                 courseClass->getCourse().getNeedsComputerLab() != room->getIsComputerLab() ||
                 (
-                    courseClass->getTeacher().getNeedsComputer() != room->getHasComputer() &&
-                    courseClass->getTeacher().getNeedsComputer() == true
+                    courseClass->getTeachers().front()->getNeedsComputer() == true &&
+                    room->getHasComputer() == false
                 )
             ){
                 constraints[classCounter + 2] = false;
@@ -347,7 +347,7 @@ void Schedule::checkConstraints(){
                     if( courseClass->getId() == (*iterator)->getId() ){continue;}
 
                     //if original class and this class has same teacher, it's a clash
-                    if(courseClass->teacherOverlaps( **iterator )){
+                    if(courseClass->teachersOverlap( **iterator )){
                         teacherFound = true;}
 
                     //if original class and this class has common section(s), it's a clash
@@ -377,15 +377,16 @@ void Schedule::checkConstraints(){
 
 double Schedule::addConstraintsWeights(){
     double totalScore = 0;
-    for(int i = 0; i < constraints.size(); i++){
-        totalScore += (int) constraints[i];
-    }
+
     for(const auto& i: constraints){
         totalScore += (int) i;
     }
+
     //fitness returned will be between 0 to 1 inclusive
-    return ( (double) totalScore /( Specs::getInstance().getNumberOfCourseClasses() *
-        Specs::getInstance().getNumberOfConstraints() ) );
+    double constraintsSize = (double) constraints.size();
+    return (
+        (double) totalScore / constraintsSize
+    );
 
 }
 
