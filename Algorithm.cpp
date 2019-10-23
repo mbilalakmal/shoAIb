@@ -23,6 +23,15 @@ Algorithm::~Algorithm(){
 
     bestFitness = 0.0;
     avgFitness  = 0.0;
+    
+    for(auto& i: population){
+        delete i;
+    }
+
+    for(auto& j: newPopulation){
+        delete j;
+    }
+
     population.clear();
     newPopulation.clear();
 
@@ -113,7 +122,7 @@ void Algorithm::reproduction(){
         }while(one >= (populationSize - worstSize) );
 
         //copy it to the new generation
-        newPopulation[i] = population[one];
+        *( newPopulation[i] ) = *( population[one] ) ;
 
     }
 
