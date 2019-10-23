@@ -17,6 +17,16 @@ Algorithm::Algorithm()
         newPopulation.resize( populationSize );
 }
 
+//destructor
+Algorithm::~Algorithm(){
+
+    bestFitness = 0.0;
+    avgFitness  = 0.0;
+    population.clear();
+    newPopulation.clear();
+
+}
+
 //initialize first gen with random schedules
 void Algorithm::initialize(){
     for(auto& i: population){
