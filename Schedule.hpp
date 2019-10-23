@@ -50,6 +50,11 @@ class Schedule{
 
         const vector< list< CourseClass* > >&
             getSlots() const {return slots;}
+
+        /*
+        FOR TESTING PURPOSE ONLY
+        */
+        void printSchedule();
 		
 	private:
 

@@ -390,6 +390,51 @@ double Schedule::addConstraintsWeights(){
 
 }
 
+/*
+FOR TESTING PURPOSE ONLY
+*/
+void Schedule::printSchedule(){
+
+    int day, spaceTime, roomID, time;
+    int totalHours      = Specs::getInstance().getTotalHours();
+    int numberOfRooms   = Specs::getInstance().getNumberOfRooms();
+    int weekDays        = Specs::getInstance().getWeekDays();
+    int spaceTimePerDay = numberOfRooms * totalHours;
+
+    // for(int position = 0; position < slots.size(); position++){
+
+    //     day         = position / spaceTimePerDay;
+    //     spaceTime   = position % spaceTimePerDay;
+    //     roomID      = spaceTime / totalHours;
+    //     time        = spaceTime % totalHours;
+
+    // }
+
+    for(int day = 0; day < weekDays; day+= spaceTimePerDay){
+
+        cout << endl << "DAY: " << day+1 << endl;
+
+        for(int room = 0; room < numberOfRooms; room += totalHours){
+
+            cout << "ROOM: " << Specs::getInstance().getRoomById(room)->getName() << endl;
+
+            for(int time = 0; time < totalHours; time += 1){
+
+                cout << "SLOT: " << time+1 << " ";
+
+                const CourseClass *courseClass = slots[
+                    day + room + time
+                ].front();
+
+                cout << courseClass->getId()
+                     << " "
+                     << courseClass->getCourse().getShortTitle();
+            }
+        }
+    }
+
+}
+
 //crossover occurs by randomly swapping some classes between two schedules
 //this is a little different from typical crossover implementations as
 //no new offsprings are created. However it still works (uncited)
