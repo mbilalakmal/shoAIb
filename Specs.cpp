@@ -14,28 +14,40 @@ Specs Specs::instance;
 Specs::~Specs(){
     //delete all the teachers
 	for( auto it = teachers.begin();
-		it != teachers.end(); it++ )
+		it != teachers.end(); it++ ){
 		delete it->second;
+	}
+	teachers.clear();
 
     //delete all the sections
 	for( auto it = sections.begin();
-		it != sections.end(); it++ )
+		it != sections.end(); it++ ){
 		delete it->second;
+	}
+	sections.clear();
 
     //delete all the courses
 	for( auto it = courses.begin();
-		it != courses.end(); it++ )
+		it != courses.end(); it++ ){
 		delete it->second;
+	}
+	courses.clear();
 
     //delete all the rooms
 	for( auto it = rooms.begin();
-		it != rooms.end(); it++ )
+		it != rooms.end(); it++ ){
 		delete it->second;
+	}
+	rooms.clear();
 
     //delete all the classes
 	for( auto it = courseClasses.begin();
-		it != courseClasses.end(); it++ )
+		it != courseClasses.end(); it++ ){
 		delete *it;
+	}
+	courseClasses.clear();
+
+	isEmpty = true;
 }
 
 void Specs::parseFile(string& fileName) {
