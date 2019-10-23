@@ -1,5 +1,6 @@
 #include"Schedule.cpp"
 #include"Algorithm.hpp"
+#include"Specs.cpp"
 
 #include<ctime>
 #include<algorithm>
@@ -59,7 +60,7 @@ void Algorithm::calculateFitness(){
     double sum = 0.0;
 
     //add up fitness of every schedule
-    for(auto& const i: population){
+    for(const auto& i: population){
         sum += i->getFitness();
     }
 
@@ -93,7 +94,8 @@ int Algorithm::selectForReproduction(){
             return j+1;
             }
     }
-
+    //to avoid compiler warnings
+    return 0;
 }
 
 void Algorithm::reproduction(){
