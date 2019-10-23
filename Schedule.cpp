@@ -14,8 +14,8 @@ Schedule::Schedule(int &seed){
     
     //resize slots vector
     slots.resize(
-        Specs::getInstance().getWeekDays *
-        Specs::getInstance().getTotalHours *
+        Specs::getInstance().getWeekDays() *
+        Specs::getInstance().getTotalHours() *
         Specs::getInstance().getNumberOfRooms()
         //Weekdays * timeslots * rooms FROM Specs
     );
