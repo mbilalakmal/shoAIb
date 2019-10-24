@@ -12,7 +12,6 @@ using namespace std;
 
 //default constructor
 Schedule::Schedule(int &seed){
-    
     //resize slots vector
     slots.resize(
         Specs::getInstance().getWeekDays() *

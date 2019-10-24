@@ -6,7 +6,7 @@
 #include<algorithm>
 
 Algorithm::Algorithm()
-    :seed( time(NULL) ) {
+    :seed( std::time(nullptr) ) {
 
         populationSize = Specs::getInstance().getPopulationSize();
         maxGenerations = Specs::getInstance().getMaxGenerations();
@@ -39,6 +39,7 @@ Algorithm::~Algorithm(){
 
 //initialize first gen with random schedules
 void Algorithm::initialize(){
+    
     for(auto& i: population){
         i = new Schedule(seed);
     }
@@ -59,7 +60,7 @@ void Algorithm::run(){
         currentGeneration++;
     }
     //report best chromosome here?
-    
+
     /*
     FOR TESTING PURPOSE ONLY
     */
