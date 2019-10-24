@@ -25,8 +25,7 @@ The static instance is responsible for
 //describes the specifications of courses, rooms, classes, teachers, and sections
 class Specs{
 	public:
-		
-		Specs() : isEmpty(true){}
+	
 		~Specs();
 		
 		/*
