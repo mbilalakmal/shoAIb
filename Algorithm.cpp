@@ -50,8 +50,8 @@ void Algorithm::initialize(){
 //Main Execution of the algorithm
 void Algorithm::run(){
     while(
-        currentGeneration < maxGenerations &&
-        bestFitness < 1.0
+        bestFitness < 1.0 &&
+        currentGeneration < maxGenerations
         //also a time limit to break the loop
     ){
 
@@ -59,6 +59,11 @@ void Algorithm::run(){
         currentGeneration++;
     }
     //report best chromosome here?
+    
+    /*
+    FOR TESTING PURPOSE ONLY
+    */
+    population.front()->printSchedule();
 }
 
 //calc avg and best fitness for this generation
