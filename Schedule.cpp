@@ -5,6 +5,7 @@
 #include<vector>
 #include<list>
 #include<unordered_set>
+#include<iostream>
 using namespace std;
 
 //describes a whole week's schedule in time-space slots occupied by course classes
@@ -313,18 +314,6 @@ void Schedule::checkConstraints(){
                 constraints[classCounter + 1] = false;
             }
 
-            //theory/lab in theory/lab
-            if(
-                courseClass->getCourse().getNeedsElectricalLab() != room->getIsElectricalLab() ||
-                courseClass->getCourse().getNeedsComputerLab() != room->getIsComputerLab() ||
-                (
-                    courseClass->getTeachers().front()->getNeedsComputer() == true &&
-                    room->getHasComputer() == false
-                )
-            ){
-                constraints[classCounter + 2] = false;
-            }
-
             /*
             check for INHERENT::SECTION & TEACHER constraints
             */
@@ -359,12 +348,12 @@ void Schedule::checkConstraints(){
 
             //no other class for one section
             if(sectionFound){
-                constraints[classCounter + 3] = false;
+                constraints[classCounter + 2] = false;
             }
 
             //no other class for one teacher
             if(teacherFound){
-                constraints[classCounter + 4] = false;
+                constraints[classCounter + 3] = false;
             }
 
         }

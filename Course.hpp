@@ -27,9 +27,7 @@ class Course{
 				department(department),
 				school(school),
 				isCoreCourse(isCoreCourse),
-				isLabCourse(isLabCourse),
-				needsComputerLab(needsComputerLab),
-				needsElectricalLab(needsElectricalLab){}
+				isLabCourse(isLabCourse){}
 		
 		int getId() const {return id;}
 
@@ -50,10 +48,6 @@ class Course{
 		bool getIsCoreCourse() const {return isCoreCourse;}
 
 		bool getIsLabCourse() const { return isLabCourse;}
-
-		bool getNeedsComputerLab() const {return needsComputerLab;}
-
-		bool getNeedsElectricalLab() const {return needsElectricalLab;}
 		
 	private:
 		
@@ -67,11 +61,6 @@ class Course{
 		vector<int>	offeredToBatches;	//2017 & 2018
 		bool		isCoreCourse;		//true = is a core course
 		bool		isLabCourse;		//true = is a lab course
-
-		bool		needsComputerLab;	//true = needs a computer lab
-		bool		needsElectricalLab;	//true = needs an electrical lab
-		// bool		needsProjector;		//Not needed
-		// bool		needsComputer;		//Moved to teacher
 	
 };
 
