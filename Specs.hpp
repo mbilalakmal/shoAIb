@@ -72,27 +72,35 @@ class Specs{
 		
 		int getNumberOfCourseClasses() const {return courseClasses.size();}	
 		
-		int getNumberOfConstraints() const {return numberOfConstraints;}
+		/*
+		FOR TESTING PURPOSE ONLY!!!
+		*/
 
-		int getWeekDays() const {return	weekDays;}
+		int getNumberOfConstraints() const {return 4;}//numberOfConstraints;}
 
-		int getTotalHours() const {return totalHours;}
+		int getWeekDays() const {return	4;}//weekDays;}
 
-		int getMutationRate() const {return mutationRate;}
+		int getTotalHours() const {return 4;}//totalHours;}
 
-		int getCrossoverRate() const {return crossoverRate;}
+		double getMutationRate() const {return 0.05;}//mutationRate;}
 
-		int getMutationPoints() const {return mutationPoints;}
+		double getCrossoverRate() const {return 0.6;}//crossoverRate;}
 
-		int getCrossoverPoints() const {return crossoverPoints;}
+		int getMutationPoints() const {return 2;}//mutationPoints;}
 
-		int getPopulationSize() const {return populationSize;}
+		int getCrossoverPoints() const {return 2;}//crossoverPoints;}
 
-		int getMaxGenerations() const {return maxGenerations;}
+		int getPopulationSize() const {return 100;}//populationSize;}
 
-		int getBestSize() const {return bestSize;}
+		int getMaxGenerations() const {return 1000;}//maxGenerations;}
 
-		int getWorstSize() const {return worstSize;}
+		int getBestSize() const {return 10;}//bestSize;}
+
+		int getWorstSize() const {return 0;}//worstSize;}
+
+		/*^^^
+		FOR TESTING PURPOSE ONLY!!!
+		*/
 
 		bool getIsEmpty() const {return isEmpty;}
 
