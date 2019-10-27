@@ -54,7 +54,7 @@ class Schedule{
         /*
         FOR TESTING PURPOSE ONLY
         */
-        void printSchedule();
+        void printSchedule(bool);
 		
 	private:
 

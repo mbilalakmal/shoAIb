@@ -381,9 +381,11 @@ double Schedule::addConstraintsWeights(){
 /*
 FOR TESTING PURPOSE ONLY
 */
-void Schedule::printSchedule(){
+void Schedule::printSchedule(bool full = false){
 
     cout << "fitness: " << fitness << endl;
+
+    if(!full)   return;
 
     int day, spaceTime, roomID, time;
     int totalHours      = Specs::getInstance().getTotalHours();
