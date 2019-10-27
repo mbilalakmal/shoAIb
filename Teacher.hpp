@@ -17,10 +17,8 @@ class Teacher{
 					string& name,
 					string&	department,
 					bool	isSenior,
-					bool	needsComputer,
 					string	building,
-					int		floor,
-					vector<bool>	preferredSlots)
+					int		floor)
 				: 	id(id),
 					name(name),
 					department(department),
