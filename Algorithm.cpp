@@ -5,17 +5,19 @@
 #include<ctime>
 #include<algorithm>
 
-Algorithm::Algorithm()
-    :seed( std::time(nullptr) ) {
+Algorithm::Algorithm(){
+
+        seed = time(nullptr);
 
         populationSize = Specs::getInstance().getPopulationSize();
         maxGenerations = Specs::getInstance().getMaxGenerations();
 
         bestSize    = Specs::getInstance().getBestSize();
-        worstSize   = Specs::getInstance().getWorstSize(); 
+        worstSize   = Specs::getInstance().getWorstSize();
 
         population.resize( populationSize );
         newPopulation.resize( populationSize );
+
 }
 
 //destructor
@@ -39,10 +41,12 @@ Algorithm::~Algorithm(){
 
 //initialize first gen with random schedules
 void Algorithm::initialize(){
-    
-    for(auto& i: population){
-        i = new Schedule(seed);
+
+    for(int i = 0; i < populationSize; i++){
+        delete population[i];
+        population.at(i) = new Schedule(seed);
     }
+
     currentGeneration = 0;
 
     calculateFitness();
@@ -50,6 +54,7 @@ void Algorithm::initialize(){
 
 //Main Execution of the algorithm
 void Algorithm::run(){
+
     while(
         bestFitness < 1.0 &&
         currentGeneration < maxGenerations
@@ -57,6 +62,7 @@ void Algorithm::run(){
     ){
 
         reproduction();
+        population.front()->printSchedule(false);
         currentGeneration++;
     }
     //report best chromosome here?
@@ -64,7 +70,7 @@ void Algorithm::run(){
     /*
     FOR TESTING PURPOSE ONLY
     */
-    population.front()->printSchedule();
+    population.front()->printSchedule(true);
 }
 
 //calc avg and best fitness for this generation
@@ -99,12 +105,12 @@ void Algorithm::calculateFitness(){
 int Algorithm::selectForReproduction(){
 
     double x = r8_uniform_ab ( 0.0, 1.0, seed );
-    if ( x < population[0]->cumulativeProb )  return 0;
+    if( x < population.at(0)->cumulativeProb ) return 0;
 
     for (int j = 0; j < populationSize - 1; j++ ){
         if (
-            x >= population[j]->cumulativeProb &&
-            x < population[j+1]->cumulativeProb
+            x >= population.at(j)->cumulativeProb &&
+            x < population.at(j + 1)->cumulativeProb
             ){
             return j+1;
             }
@@ -128,7 +134,9 @@ void Algorithm::reproduction(){
         }while(one >= (populationSize - worstSize) );
 
         //copy it to the new generation
-        *( newPopulation[i] ) = *( population[one] ) ;
+        delete newPopulation[i];
+        //newPopulation[i] = new Schedule( *( population[one] ) );
+        newPopulation.at(i) = new Schedule( *(population.at(one)) );
 
     }
 
@@ -141,8 +149,8 @@ void Algorithm::reproduction(){
         one     = i4_uniform_ab(0, populationSize - 1, seed);
         two     = i4_uniform_ab(0, populationSize - 1, seed);
 
-        Schedule &schedule1 = *( newPopulation[one] );
-        Schedule &schedule2 = *( newPopulation[two] );
+        Schedule &schedule1 = *( newPopulation.at(one) );
+        Schedule &schedule2 = *( newPopulation.at(two) );
 
         crossOver(schedule1, schedule2, seed);
 
@@ -151,8 +159,8 @@ void Algorithm::reproduction(){
         schedule2.mutation(seed);
 
         //copy both back to original population
-        *( population[j] )      = schedule1;
-        *( population[j+1] )    = schedule2;
+        *( population.at(j) )      = schedule1;
+        *( population.at(j+1) )    = schedule2;
 
     }
 
@@ -163,13 +171,18 @@ void Algorithm::reproduction(){
 
 void Algorithm::sortBestAndWorst(){
 
-    //partition vector based on bestSize and worstSize
-    nth_element(population.begin(), population.begin() + bestSize, population.end(), compareSchedules );
-    nth_element(population.begin(), population.begin() + worstSize, population.end(), compareSchedules );
+    // //partition vector based on bestSize and worstSize
+    // nth_element(population.begin(), population.begin() + bestSize, population.end(), compareSchedules );
+    // nth_element(population.begin(), population.end() - worstSize, population.end(), compareSchedules );
     
-    //partially sort for best and worst chromosomes
-    sort(population.begin(), population.begin() + bestSize, compareSchedules);
-    sort(population.end() - worstSize, population.end(), compareSchedules);
+    // //partially sort for best and worst chromosomes
+    // sort(population.begin(), population.begin() + bestSize, compareSchedules);
+    // sort(population.end() - worstSize, population.end(), compareSchedules);
+
+    partial_sort(   population.begin(),
+                    population.begin() + bestSize,
+                    population.end(),
+                    compareSchedules);
 
     //assign best fitness of the first chromosome
     bestFitness = population.front()->getFitness();
