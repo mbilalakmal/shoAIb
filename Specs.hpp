@@ -9,7 +9,7 @@ using namespace std;
 
 class Course;
 class Room;
-class CourseClass;
+class Lecture;
 class Teacher;
 class StudentSection;
 
@@ -18,7 +18,7 @@ class StudentSection;
 The static instance is responsible for 
 1. reading from input json file(s)
 2. creating courses, teachers, sections, and rooms
-3. creating courseclasses with existing courses, teachers, and sections
+3. creating Lectures with existing courses, teachers, and sections
 4. providing read-access to these resources to schedule and algorithm
 */
 
@@ -68,9 +68,9 @@ class Specs{
 
 		int getNumberOfCourses() const { return courses.size(); }
 		
-		const list<CourseClass*>& getCourseClasses() const {return courseClasses;}
+		const list<Lecture*>& getLectures() const {return lectures;}
 		
-		int getNumberOfCourseClasses() const {return courseClasses.size();}	
+		int getNumberOfLectures() const {return lectures.size();}	
 		
 		/*
 		FOR TESTING PURPOSE ONLY!!!
@@ -116,12 +116,17 @@ class Specs{
 		*/
 
 		
-
-		unordered_map<int, Course*>			courses;		//courses mapped with their ids
-		unordered_map<int, Room*>			rooms;			//rooms mapped with their ids
-		unordered_map<int, Teacher*>		teachers;		//teachers mapped with their ids
-		unordered_map<int, StudentSection*>	sections;		//sections mapped with their ids
-		list<CourseClass*>					courseClasses;	//list of all parsed course classes
+		//courses mapped with their ids
+		unordered_map<int, Course*>		courses;
+		//rooms mapped with their ids
+		unordered_map<int, Room*>		rooms;
+		//teachers mapped with their ids
+		unordered_map<int, Teacher*>	teachers;
+		//sections mapped with their ids
+		unordered_map<int, StudentSection*>	sections;
+		//list of all parsed course classes
+		
+		list<Lecture*>	lectures;
 
 		//number of constraints for each class(related to room, course, teacher, and section)
 		int		numberOfConstraints;

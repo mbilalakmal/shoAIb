@@ -6,7 +6,7 @@
 #include<vector>
 using namespace std;
 
-class CourseClass;
+class Lecture;
 
 //describes a teacher which is assigned to one or more course classes
 class Teacher{
@@ -28,11 +28,11 @@ class Teacher{
 
 		~Teacher(){
 			//does not delete the objects
-			courseClasses.clear();
+			lectures.clear();
 		}
 
-		void addCourseClass(CourseClass* courseClass){
-			courseClasses.push_back(courseClass);
+		void addLecture(Lecture* lecture){
+			lectures.push_back(lecture);
 		}
 		
 		int getId() const {return id;}
@@ -47,8 +47,8 @@ class Teacher{
 
 		int getFloor() const {return floor;}
 
-		const list<CourseClass*>& getCourseClasses() const
-			{return courseClasses;}
+		const list<Lecture*>& getLectures() const
+			{return lectures;}
 	
 	private:
 
@@ -65,7 +65,7 @@ class Teacher{
 	int		floor;			//0, 1, 2(in EE)
 
 	//course classes taught by the teacher
-	list<CourseClass*>	courseClasses;
+	list<Lecture*>	lectures;
 };
 
 #endif

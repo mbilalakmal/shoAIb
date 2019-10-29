@@ -1,6 +1,6 @@
 #include "Specs.hpp"
 #include "Room.hpp"
-#include "CourseClass.hpp"
+#include "Lecture.hpp"
 #include<iostream>
 #include<string>
 #include<fstream>
@@ -42,11 +42,11 @@ Specs::~Specs(){
 	rooms.clear();
 
     //delete all the classes
-	for( auto it = courseClasses.begin();
-		it != courseClasses.end(); it++ ){
+	for( auto it = lectures.begin();
+		it != lectures.end(); it++ ){
 		delete *it;
 	}
-	courseClasses.clear();
+	lectures.clear();
 
 	isEmpty = true;
 }
@@ -54,7 +54,7 @@ Specs::~Specs(){
 void Specs::parseFile(string& fileName) {
 
     //clear all the maps
-	courseClasses.clear();
+	lectures.clear();
     teachers.clear();
     sections.clear();
     courses.clear();
@@ -118,12 +118,12 @@ void Specs::parseFile(string& fileName) {
 		Course *c = getCourseById(cid);
 		Teacher *t = getTeacherById(tid);
 		StudentSection *s = getSectionById(sid);
-		CourseClass *courseClass = new CourseClass(c);
-		courseClass->addSection(s);
-		courseClass->addTeacher(t);
-		s->addCourseClass(courseClass);
-		t->addCourseClass(courseClass);
-		courseClasses.push_back(courseClass);
+		Lecture *lecture = new Lecture(c);
+		lecture->addSection(s);
+		lecture->addTeacher(t);
+		s->addLecture(lecture);
+		t->addLecture(lecture);
+		lectures.push_back(lecture);
 	}
 
 
@@ -139,6 +139,6 @@ void Specs::parseFile(string& fileName) {
 	/*
 	maybe call functions for each user-defined type
 	courses, rooms, sections, and teachers,
-	then CourseClasses which will link actual pointers using IDs
+	then lectures which will link actual pointers using IDs
 	*/
 }

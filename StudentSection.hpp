@@ -5,7 +5,7 @@
 #include<list>
 using namespace std;
 
-class CourseClass;
+class Lecture;
 
 //describes an atomic student section (A1 OR C2)
 class StudentSection{
@@ -25,11 +25,11 @@ class StudentSection{
 
 		~StudentSection(){
 			//does not delete the objects
-			courseClasses.clear();
+			lectures.clear();
 		}
 
-		void addCourseClass(CourseClass* courseClass){
-			courseClasses.push_back(courseClass);
+		void addLecture(Lecture* lecture){
+			lectures.push_back(lecture);
 		}
 
 		int getId() const {return id;}
@@ -42,8 +42,8 @@ class StudentSection{
 
 		const string& getDepartment() const {return department;}
 		
-		const list<CourseClass*>& getCourseClasses()
-		const	{return courseClasses;}
+		const list<Lecture*>& getLectures()
+		const	{return lectures;}
 	
 	private:
 
@@ -54,7 +54,7 @@ class StudentSection{
 	string	department;	//dept of the section (CS, EE, SE)
 
 	//course classes the section is enrolled in
-	list<CourseClass*>	courseClasses;	
+	list<Lecture*>	lectures;	
 
 };
 

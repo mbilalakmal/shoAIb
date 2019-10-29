@@ -23,7 +23,7 @@ Schedule::Schedule(int &seed){
 
     //resize constraints vector
     constraints.resize(
-        Specs::getInstance().getNumberOfCourseClasses() *
+        Specs::getInstance().getNumberOfLectures() *
         Specs::getInstance().getNumberOfConstraints(),
         true
         //Number of hard+soft constraints * classes FROM Specs
@@ -31,7 +31,7 @@ Schedule::Schedule(int &seed){
 
     //get classes and place at random slots
 
-    const list<CourseClass*>& courseClasses = Specs::getInstance().getCourseClasses();
+    const list<Lecture*>& lectures = Specs::getInstance().getLectures();
 
     int numberOfRooms   = Specs::getInstance().getNumberOfRooms();
     int weekDays        = Specs::getInstance().getWeekDays();
@@ -40,7 +40,7 @@ Schedule::Schedule(int &seed){
     int duration, day, room, time, position;
     vector<int> positions;
 
-    for(auto& it: courseClasses){
+    for(auto& it: lectures){
 
         //determine random day, time, space
 
@@ -64,7 +64,7 @@ Schedule::Schedule(int &seed){
                 positions.push_back(position+i);
             }
 
-            classes.insert( pair< CourseClass*, vector<int> >(it, positions) );
+            classes.insert( pair< Lecture*, vector<int> >(it, positions) );
 
         }
         else{
@@ -81,7 +81,7 @@ Schedule::Schedule(int &seed){
                 slots.at(position).push_back( it );
                 positions.push_back(position);
             }
-            classes.insert( pair< CourseClass*, vector<int> >(it, positions) );
+            classes.insert( pair< Lecture*, vector<int> >(it, positions) );
 
         }
 
@@ -156,9 +156,9 @@ void Schedule::mutation(int &seed){
         //move iterator to mutationPosition
         advance(it, mutationClassPosition);
 
-        CourseClass *courseClass = it->first;
+        Lecture *lecture = it->first;
 
-        duration = courseClass->getCourse().getDuration();
+        duration = lecture->getCourse().getDuration();
         currentPositions.reserve(duration);
         newPositions.reserve(duration);
 
@@ -166,7 +166,7 @@ void Schedule::mutation(int &seed){
         //*Lab and Theory courses differ in the manner of relocation
         //*of their slots because lab slots should be contiguous
 
-        if(courseClass->getCourse().getIsLabCourse()){
+        if(lecture->getCourse().getIsLabCourse()){
             currentPosition = it->second.at(0);
 
             //pick rando day, room, and time
@@ -183,14 +183,14 @@ void Schedule::mutation(int &seed){
             for(int j = 0; j < duration; j++){
 
                 //get list of classes at current slot
-                list<CourseClass*>& classesList =
+                list<Lecture*>& classesList =
                     slots.at(currentPosition + j);
 
                 //find target courseClass
                 //replace with std::find ==
                 for(auto it = classesList.begin(); it != classesList.end(); it++){
                     //check if it is the target courseClass
-                    if( (*it)->getId() == courseClass->getId() ){
+                    if( (*it)->getId() == lecture->getId() ){
                         //erase the pointer NOT THE OBJECT from the list
                         classesList.erase( it );
                         break;
@@ -198,13 +198,13 @@ void Schedule::mutation(int &seed){
                 }
 
                 //relocate at newPositions
-                slots.at(newPosition + j).push_back( courseClass );
+                slots.at(newPosition + j).push_back( lecture );
                 newPositions.push_back(newPosition+j);
                 
             }
 
             //change entries in classes map to new positions
-            classes.at( courseClass ) = newPositions;
+            classes.at( lecture ) = newPositions;
 
         }
         else{
@@ -216,12 +216,12 @@ void Schedule::mutation(int &seed){
                 currentPosition = currentPositions.at(j);
 
                 //get list of classes at current slot
-                list<CourseClass*>& classesList =
+                list<Lecture*>& classesList =
                     slots.at(currentPosition);
 
                 //find target courseClass
                 for(auto it = classesList.begin(); it != classesList.end(); it++){
-                    if( (*it)->getId() == courseClass->getId() ){
+                    if( (*it)->getId() == lecture->getId() ){
                         classesList.erase( it );
                         break;
                     }
@@ -237,13 +237,13 @@ void Schedule::mutation(int &seed){
                             totalHours * numberOfRooms * day;
 
                 //relocate at newPositions
-                slots.at( newPosition ).push_back(courseClass);
+                slots.at( newPosition ).push_back(lecture);
                 newPositions.push_back(newPosition);
 
             }
 
             //change entries in classes map to new positions
-            classes.at(courseClass) = newPositions;
+            classes.at(lecture) = newPositions;
 
         }
 
@@ -282,7 +282,7 @@ void Schedule::checkConstraints(){
     for(const auto& classIterator: classes){
 
         //get const pointer to course class
-        const CourseClass* courseClass = classIterator.first;
+        const Lecture* lecture = classIterator.first;
 
         //flags to see if both (a section clash and a teacher clash)
         //are found to exit searching 
@@ -310,7 +310,7 @@ void Schedule::checkConstraints(){
             }
 
             //capacity at least equal to strength
-            if( room->getCapacity() < courseClass->getStrength() ){
+            if( room->getCapacity() < lecture->getStrength() ){
                 constraints.at( classCounter + 1 ) = false;
             }
 
@@ -324,7 +324,7 @@ void Schedule::checkConstraints(){
                 j++, dayTime += totalHours)
             {
 
-                const list<CourseClass*>& ccList = slots.at(dayTime);
+                const list<Lecture*>& ccList = slots.at(dayTime);
 
                 //for this room check for clash with the original class [section & teacher]
 
@@ -333,14 +333,14 @@ void Schedule::checkConstraints(){
                     iterator++
                 ){
                     //dont compare class with it self
-                    if( courseClass->getId() == (*iterator)->getId() ){continue;}
+                    if( lecture->getId() == (*iterator)->getId() ){continue;}
                     
                     //if original class and this class has same teacher, it's a clash
-                    if(courseClass->teachersOverlap( **iterator )){
+                    if(lecture->teachersOverlap( **iterator )){
                         teacherFound = true;}
                         
                     //if original class and this class has common section(s), it's a clash
-                    if(courseClass->sectionsOverlap( **iterator )){
+                    if(lecture->sectionsOverlap( **iterator )){
                         sectionFound = true;}
                         
                 }
@@ -404,20 +404,20 @@ void Schedule::printSchedule(bool full = false){
             continue;
         }
 
-        const CourseClass *courseClass = slots.at(position).front();
+        const Lecture *lecture = slots.at(position).front();
 
         cout    << "DAY: " << day+1
                 << "ROOM: " << Specs::getInstance().getRoomById(roomID)->getName()
                 << "SLOT: " << time+1
                 << endl;
 
-        cout << courseClass->getId()
+        cout << lecture->getId()
             << " "
-            << courseClass->getCourse().getTitle()
+            << lecture->getCourse().getTitle()
             << " "
-            << courseClass->getTeachers().front()->getName()
+            << lecture->getTeachers().front()->getName()
             << " "
-            << courseClass->getSections().front()->getName()
+            << lecture->getSections().front()->getName()
             << endl;
 
     }
@@ -470,9 +470,9 @@ void crossOver(Schedule& schedule1, Schedule& schedule2, int &seed){
         }
         //crossover occurs here
         
-        CourseClass *courseClass = it1->first;
+        Lecture *lecture = it1->first;
 
-        int duration = courseClass->getCourse().getDuration();
+        int duration = lecture->getCourse().getDuration();
         vector<int> tempPositions(duration);    //temporary vector used in two way swap of positions
 
         //each iteration swaps(only removes) one slot in the slots entries of both schedules
@@ -482,14 +482,14 @@ void crossOver(Schedule& schedule1, Schedule& schedule2, int &seed){
             int position1 = it1->second.at(j);
             int position2 = it2->second.at(j);
 
-            list<CourseClass*>& classesList1 = slots1.at( position1 );
-            list<CourseClass*>& classesList2 = slots2.at( position2 );
+            list<Lecture*>& classesList1 = slots1.at( position1 );
+            list<Lecture*>& classesList2 = slots2.at( position2 );
 
             //remove entry from schedule 1's slot
             for(auto classesList1Iterator = classesList1.begin();
                 classesList1Iterator != classesList1.end(); classesList1Iterator++){
-                //check if it is the target courseClass
-                if( (*classesList1Iterator)->getId() == courseClass->getId() ){
+                //check if it is the target Lecture
+                if( (*classesList1Iterator)->getId() == lecture->getId() ){
                     //remove pointer from this slot
                     classesList1.erase( classesList1Iterator );
                     break;
@@ -500,7 +500,7 @@ void crossOver(Schedule& schedule1, Schedule& schedule2, int &seed){
             for(auto classesList2Iterator = classesList2.begin();
                 classesList2Iterator != classesList2.end(); classesList2Iterator++){
                 //check if it's the target
-                if( (*classesList2Iterator)->getId() == courseClass->getId() ){
+                if( (*classesList2Iterator)->getId() == lecture->getId() ){
                     classesList2.erase( classesList2Iterator );
                     break;
                 }
@@ -514,12 +514,12 @@ void crossOver(Schedule& schedule1, Schedule& schedule2, int &seed){
         it2->second     = it1->second;
         it1->second     = tempPositions;
 
-        //now we need to insert courseclass pointers in the lists at these new slots
+        //now we need to insert lecture pointers in the lists at these new slots
         for(const auto& positions1: it1->second){
-            slots1.at( positions1 ).push_back( courseClass );
+            slots1.at( positions1 ).push_back( lecture );
         }
         for(const auto& positions2: it2->second){
-            slots2.at( positions2 ).push_back( courseClass );
+            slots2.at( positions2 ).push_back( lecture );
         }
 
     }

@@ -4,10 +4,10 @@
 #include<vector>
 #include<list>
 #include<unordered_map>
-#include"CourseClass.hpp"
+#include"Lecture.hpp"
 using namespace std;
 
-class CourseClass;
+class Lecture;
 
 //describes a whole week's schedule in time-space slots occupied by course classes
 class Schedule{
@@ -45,10 +45,10 @@ class Schedule{
 		
 		const vector<bool>& getConstraints() const {return constraints;}
 
-        const unordered_map<CourseClass*, vector<int> >&
+        const unordered_map<Lecture*, vector<int> >&
             getClasses() const {return classes;}
 
-        const vector< list< CourseClass* > >&
+        const vector< list< Lecture* > >&
             getSlots() const {return slots;}
 
         /*
@@ -59,11 +59,11 @@ class Schedule{
 	private:
 
         //day * time_slot * rooms
-		vector< list< CourseClass* > >
+		vector< list< Lecture* > >
             slots;
 
-        //courseClass mapped to it's slots
-        unordered_map< CourseClass*, vector< int > >
+        //Lecture mapped to it's slots
+        unordered_map< Lecture*, vector< int > >
             classes;
 
         //used to calc fitness [true = that constraint is fulfilled]
