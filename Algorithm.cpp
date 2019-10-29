@@ -128,10 +128,9 @@ void Algorithm::reproduction(){
     for(int i = 0; i < populationSize; i++){
 
         //pick a random chromosome's index based on fitness
-        //pick again if it's index of a [worstSize] chromosome
         do{
             one = selectForReproduction();
-        }while(one >= (populationSize - worstSize) );
+        }while(one >= populationSize );
 
         //copy it to the new generation
         delete newPopulation[i];
@@ -171,18 +170,29 @@ void Algorithm::reproduction(){
 
 void Algorithm::sortBestAndWorst(){
 
-    // //partition vector based on bestSize and worstSize
-    // nth_element(population.begin(), population.begin() + bestSize, population.end(), compareSchedules );
-    // nth_element(population.begin(), population.end() - worstSize, population.end(), compareSchedules );
-    
-    // //partially sort for best and worst chromosomes
-    // sort(population.begin(), population.begin() + bestSize, compareSchedules);
-    // sort(population.end() - worstSize, population.end(), compareSchedules);
 
+    //place worst chromosomes at the end
+    partial_sort(   population.rbegin(),
+                    population.rbegin() + worstSize,
+                    population.rend(),
+                    compareSchedulesAsc);
+
+    //replace them with new chromosomes
+
+    {
+        int i = 0; auto it = population.rbegin();
+        for(; i < worstSize && it != population.rend(); i++, it++){
+            delete *( it );
+            *( it ) = new Schedule(seed);
+        }
+
+    }
+
+    //place best chromosomes at the start
     partial_sort(   population.begin(),
                     population.begin() + bestSize,
                     population.end(),
-                    compareSchedules);
+                    compareSchedulesDesc);
 
     //assign best fitness of the first chromosome
     bestFitness = population.front()->getFitness();
