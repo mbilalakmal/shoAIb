@@ -44,7 +44,7 @@ class Lecture{
 				for(auto it_c = lecture.getSections().begin();
 					it_c != lecture.getSections().end(); it_c++){
 					//If both course classes contain a section (ID)
-					if( ( *it )->getId() == ( *it_c )->getId() ){
+					if( (*it)->getId() == (*it_c)->getId() ){
 						return true;
 					}
 				}
@@ -60,7 +60,7 @@ class Lecture{
 				for(auto it_c = lecture.getTeachers().begin();
 					it_c != lecture.getTeachers().end(); it_c++){
 					//If both course classes contain a teacher (ID)
-					if( ( *it )->getId() == ( *it_c )->getId() ){
+					if( (*it)->getId() == (*it_c)->getId() ){
 						return true;
 					}
 				}
