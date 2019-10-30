@@ -13,7 +13,7 @@ class Lecture;
 class Schedule{
 	
     //crossover occurs by randomly swapping some classes between two schedules
-    friend void crossOver(Schedule&, Schedule&, int&);
+    friend void crossover(Schedule&, Schedule&, int&);
 
     //swap function used in assignment operator and other
     friend void swap(Schedule&, Schedule&);
@@ -54,7 +54,7 @@ class Schedule{
         /*
         FOR TESTING PURPOSE ONLY
         */
-        void printSchedule(bool);
+        void printSchedule(bool) const;
 		
 	private:
 

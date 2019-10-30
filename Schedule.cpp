@@ -24,8 +24,7 @@ Schedule::Schedule(int &seed){
     //resize constraints vector
     constraints.resize(
         Specs::getInstance().getNumberOfLectures() *
-        Specs::getInstance().getNumberOfConstraints(),
-        true
+        Specs::getInstance().getNumberOfConstraints()
         //Number of hard+soft constraints * classes FROM Specs
     );
 
@@ -40,14 +39,14 @@ Schedule::Schedule(int &seed){
     int duration, day, room, time, position;
     vector<int> positions;
 
-    for(auto& it: lectures){
+    for(auto& lecture: lectures){
 
         //determine random day, time, space
 
-        duration    =   it->getCourse().getDuration();
+        duration    =   lecture->getCourse().getDuration();
         positions.reserve(duration);
 
-        if(it->getCourse().getIsLabCourse()){
+        if(lecture->getCourse().getIsLabCourse()){
         
             day     = i4_uniform_ab(0, weekDays - 1, seed);
             room    = i4_uniform_ab(0, numberOfRooms - 1, seed);
@@ -60,28 +59,32 @@ Schedule::Schedule(int &seed){
 
             //fill space-time slots for duration of lab
             for(int i = 0; i < duration; i++){
-                slots.at(position + i).push_front( it );
-                positions.push_back(position+i);
+                slots.at(position + i).push_front( lecture );
+                positions.push_back( position + i );
             }
 
-            classes.insert( pair< Lecture*, vector<int> >(it, positions) );
+            classes.insert( pair< Lecture*, vector<int> >(lecture, positions) );
 
         }
         else{
 
-            for(int i = 0; i < duration; i++){
-                day         = i4_uniform_ab(0, weekDays - 1, seed);
-                room        = i4_uniform_ab(0, numberOfRooms - 1, seed);
-                time        = i4_uniform_ab(0, totalHours - 1, seed);
+            unordered_set<int> uniquePositions;
 
-                position    =   time +
-                                totalHours * room +
-                                totalHours * numberOfRooms * day;
-
-                slots.at(position).push_back( it );
-                positions.push_back(position);
+            while(uniquePositions.size() < duration){
+                position = i4_uniform_ab(0, weekDays * numberOfRooms * totalHours - 1, seed);
+                bool inserted = uniquePositions.insert(position).second;
+                if(inserted) {
+                    slots.at(position).push_back( lecture );
+                    positions.push_back(position);
+                }
             }
-            classes.insert( pair< Lecture*, vector<int> >(it, positions) );
+
+            // for(const auto& i: positions){
+            //     cout << i << "  ";
+            // }
+            // cout << endl;
+
+            classes.insert( pair< Lecture*, vector<int> >(lecture, positions) );
 
         }
 
@@ -114,10 +117,11 @@ Schedule::Schedule(const Schedule& schedule){
 
 //copy assignment operator
 Schedule& Schedule::operator = (Schedule schedule){
-            //this schedule is swapped with temporary
-            swap(*this, schedule);
-            //swapped is returned while the old's lifecycle ends here
-            return *this;
+    //this schedule is swapped with temporary
+    swap(*this, schedule);
+    //swapped is returned while the old's lifecycle ends here
+
+    return *this;
 }
 
 //destructor
@@ -146,8 +150,10 @@ void Schedule::mutation(int &seed){
     int weekDays = Specs::getInstance().getWeekDays();
     int totalHours = Specs::getInstance().getTotalHours();
 
+    int mutationPoints = Specs::getInstance().getMutationPoints();
+
     //for each mutation point select a class and change its position
-    for(int i = 0; i < Specs::getInstance().getMutationPoints(); i++){
+    for(int i = 0; i < mutationPoints; i++){
 
         //pick random class
         mutationClassPosition = i4_uniform_ab(0, numberOfClasses - 1, seed);
@@ -167,7 +173,17 @@ void Schedule::mutation(int &seed){
         //*of their slots because lab slots should be contiguous
 
         if(lecture->getCourse().getIsLabCourse()){
+
             currentPosition = it->second.at(0);
+
+            for(int j = 0; j < duration; j++){
+
+                //get list of classes at current slot
+                list<Lecture*>& lecturesList = slots.at( currentPosition + j );
+
+                //remove target lecture
+                lecturesList.remove( lecture );
+            }
 
             //pick rando day, room, and time
             day     = i4_uniform_ab(0, weekDays - 1, seed);
@@ -180,28 +196,19 @@ void Schedule::mutation(int &seed){
 
         
             //relocate all slots
+
             for(int j = 0; j < duration; j++){
-
-                //get list of classes at current slot
-                list<Lecture*>& classesList =
-                    slots.at(currentPosition + j);
-
-                //find target courseClass
-                //replace with std::find ==
-                for(auto it = classesList.begin(); it != classesList.end(); it++){
-                    //check if it is the target courseClass
-                    if( (*it)->getId() == lecture->getId() ){
-                        //erase the pointer NOT THE OBJECT from the list
-                        classesList.erase( it );
-                        break;
-                    }
-                }
 
                 //relocate at newPositions
                 slots.at(newPosition + j).push_back( lecture );
-                newPositions.push_back(newPosition+j);
-                
+                newPositions.push_back(newPosition + j);
             }
+
+            // cout << "MUT: ";
+            // for(const auto& i: newPositions){
+            //     cout << i << "  ";
+            // }
+            // cout << endl;
 
             //change entries in classes map to new positions
             classes.at( lecture ) = newPositions;
@@ -211,36 +218,34 @@ void Schedule::mutation(int &seed){
             //get current positions of all slots
             currentPositions = it->second;
 
-            for(int j = 0; j < duration; j++){
+            unordered_set<int> uniquePositions;
 
+            //remove lecture from current positions
+            for(int j = 0; j < duration; j++){
                 currentPosition = currentPositions.at(j);
 
                 //get list of classes at current slot
-                list<Lecture*>& classesList =
-                    slots.at(currentPosition);
+                list<Lecture*>& lecturesList = slots.at( currentPosition);
 
-                //find target courseClass
-                for(auto it = classesList.begin(); it != classesList.end(); it++){
-                    if( (*it)->getId() == lecture->getId() ){
-                        classesList.erase( it );
-                        break;
-                    }
-                }
-
-                //pick rando day, room, and time
-                day     = i4_uniform_ab(0, weekDays - 1, seed);
-                room    = i4_uniform_ab(0, numberOfRooms - 1, seed);
-                time    = i4_uniform_ab(0, totalHours - 1, seed);
-                
-                newPosition =   time +
-                            totalHours * room +
-                            totalHours * numberOfRooms * day;
-
-                //relocate at newPositions
-                slots.at( newPosition ).push_back(lecture);
-                newPositions.push_back(newPosition);
-
+                //remove target lecture
+                lecturesList.remove( lecture );
             }
+
+            //pick new positions and insert lecture at their slots
+            while(uniquePositions.size() < duration){
+                newPosition = i4_uniform_ab(0, weekDays * numberOfRooms * totalHours - 1, seed);
+                bool inserted = uniquePositions.insert(newPosition).second;
+                if(inserted) {
+                    slots.at(newPosition).push_back( lecture );
+                    newPositions.push_back(newPosition);
+                }
+            }
+
+            // cout << "MUT: ";
+            // for(const auto& i: newPositions){
+            //     cout << i << "  ";
+            // }
+            // cout << endl;
 
             //change entries in classes map to new positions
             classes.at(lecture) = newPositions;
@@ -358,30 +363,31 @@ void Schedule::checkConstraints(){
 
         }
         
-        classCounter++;
+        classCounter +=
+        Specs::getInstance().getNumberOfConstraints();
 
     }
 }
 
 double Schedule::addConstraintsWeights(){
-    double totalScore = 0;
+    double fitness = 0.0;
+    int totalScore = 0;
 
     for(const auto& i: constraints){
         totalScore += (int) i;
     }
 
     //fitness returned will be between 0 to 1 inclusive
-    double constraintsSize = (double) constraints.size();
-    return (
-        (double) totalScore / constraintsSize
-    );
+    int numberOfConstraints = constraints.size();
+    fitness = totalScore / (double) numberOfConstraints;
+    return ( fitness );
 
 }
 
 /*
 FOR TESTING PURPOSE ONLY
 */
-void Schedule::printSchedule(bool full = false){
+void Schedule::printSchedule(bool full = false) const {
 
     cout << "fitness: " << fitness << endl;
 
@@ -393,6 +399,8 @@ void Schedule::printSchedule(bool full = false){
     int weekDays        = Specs::getInstance().getWeekDays();
     int spaceTimePerDay = numberOfRooms * totalHours;
 
+    int lectureCount = 0;
+
     for(int position = 0; position < slots.size(); position++){
 
         day         = position / spaceTimePerDay;
@@ -402,6 +410,17 @@ void Schedule::printSchedule(bool full = false){
 
         if( slots.at(position).empty() ){
             continue;
+        }
+        lectureCount++;
+
+        if( slots.at(position).size() > 1){
+            //IF working correctly this should never be printed
+            cout << endl <<" MULTISLOT:" <<
+            (
+                slots.at(position).back() == slots.at(position).front()
+            )
+            << slots.at(position).size() << endl;
+
         }
 
         const Lecture *lecture = slots.at(position).front();
@@ -421,6 +440,7 @@ void Schedule::printSchedule(bool full = false){
             << endl;
 
     }
+    cout << "L: " << lectureCount << endl;
 
 }
 
@@ -428,106 +448,88 @@ void Schedule::printSchedule(bool full = false){
 //this is a little different from typical crossover implementations as
 //no new offsprings are created. However it still works (uncited)
 //might have to implement another
-void crossOver(Schedule& schedule1, Schedule& schedule2, int &seed){
 
-    //coin flip
-    double random = r8_uniform_ab(0, 1.0, seed);
+void crossover(Schedule& schedule1, Schedule& schedule2, int &seed){
+
+    //check probability
+    double random = r8_uniform_ab(0.0, 1.0, seed);
     if( random > Specs::getInstance().getCrossoverRate() ){
         return;
     }
 
-    int numberOfClasses = schedule1.classes.size();
+    unordered_set<int> crossoverPoints;
 
-    //coPoints will determine which classes are swapped
-    unordered_set<int> crossOverPoints;
+    int totalClasses = schedule1.classes.size();
+    int coPointsSize = Specs::getInstance().getCrossoverPoints();
 
-    while ( crossOverPoints.size() < Specs::getInstance().getCrossoverPoints() )
-    {
-        //a set only inserts new elements so uniqueness is guaranteed
-        int pointPosition = i4_uniform_ab(0, numberOfClasses - 1, seed);
-        crossOverPoints.insert(pointPosition);
+    while( crossoverPoints.size() < coPointsSize ){
+        //a set inserts unique elements auto
+        int point = i4_uniform_ab(0, totalClasses - 1, seed);
+        crossoverPoints.insert( point );
     }
 
-    auto it1    = schedule1.classes.begin();
-    auto it2    = schedule2.classes.begin();
+    auto s1Classes  = schedule1.classes.begin();
+    auto s2Classes  = schedule2.classes.begin();
 
-    //get reference to both schedules' slots
-    auto slots1 = schedule1.slots;
-    auto slots2 = schedule2.slots;
+    auto& slots1    = schedule1.slots;
+    auto& slots2    = schedule2.slots;
 
-    bool swap   = i4_uniform_ab(0, 1, seed);    //0 OR 1
+    /*
+    this decides whether to crossover or skip over classes
+    */
+    bool swap       = i4_uniform_ab(0, 1, seed);
 
-    for(int i = 0; i < numberOfClasses; i++, it1++, it2++){
-
-        auto iterator = crossOverPoints.find(i);
-        //if i is a crossover point
-        if( iterator != crossOverPoints.end() ){
-            swap = !swap;
+    for(int i = 0; i < totalClasses;
+        i++, s1Classes++, s2Classes++){
+        
+        //check if it's a crossover point
+        auto coPIterator = crossoverPoints.find(i);
+        if( coPIterator != crossoverPoints.end() ){
+            swap != swap;
         }
 
-        if(swap == false){
+        if( swap == false){
             continue;
         }
-        //crossover occurs here
-        
-        Lecture *lecture = it1->first;
+
+        //crossover starts here for one class
+
+        //pointer to the lecture in both schedules (same)
+        Lecture *lecture = s1Classes->first;
 
         int duration = lecture->getCourse().getDuration();
-        vector<int> tempPositions(duration);    //temporary vector used in two way swap of positions
 
-        //each iteration swaps(only removes) one slot in the slots entries of both schedules
+        //each iteration removes one slot of this lecture
+        //from both schedules
         for(int j = 0; j < duration; j++){
 
-            //get list of classes at sechedule 1 and 2 slot
-            int position1 = it1->second.at(j);
-            int position2 = it2->second.at(j);
+            //get lists of lectures at schedule 1 & 2's slots
+            int position1 = s1Classes->second.at(j);
+            int position2 = s2Classes->second.at(j);
 
-            list<Lecture*>& classesList1 = slots1.at( position1 );
-            list<Lecture*>& classesList2 = slots2.at( position2 );
+            list<Lecture*>& lecturesList1 = slots1.at( position1 );
+            list<Lecture*>& lecturesList2 = slots2.at( position2 );
 
-            //remove entry from schedule 1's slot
-            for(auto classesList1Iterator = classesList1.begin();
-                classesList1Iterator != classesList1.end(); classesList1Iterator++){
-                //check if it is the target Lecture
-                if( (*classesList1Iterator)->getId() == lecture->getId() ){
-                    //remove pointer from this slot
-                    classesList1.erase( classesList1Iterator );
-                    break;
-                }
-            }
+            //remove entry from both
 
-            //remove entry from schedule 2's slots
-            for(auto classesList2Iterator = classesList2.begin();
-                classesList2Iterator != classesList2.end(); classesList2Iterator++){
-                //check if it's the target
-                if( (*classesList2Iterator)->getId() == lecture->getId() ){
-                    classesList2.erase( classesList2Iterator );
-                    break;
-                }
-            }
-
+            lecturesList1.remove(lecture);
+            lecturesList2.remove(lecture);
 
         }
 
-        //swap entries in classes map to new positions
-        tempPositions   = it2->second;
-        it2->second     = it1->second;
-        it1->second     = tempPositions;
+        //now swap entries in classes map and insert at the
+        //new positions in each schedules' slots (vector)
+        std::swap( s1Classes->second, s2Classes->second );
 
-        //now we need to insert lecture pointers in the lists at these new slots
-        for(const auto& positions1: it1->second){
-            slots1.at( positions1 ).push_back( lecture );
+        //insert entries at new slots
+        for(const auto& position1: s1Classes->second){
+            slots1.at( position1 ).push_back( lecture );
         }
-        for(const auto& positions2: it2->second){
-            slots2.at( positions2 ).push_back( lecture );
+        for(const auto& position2: s2Classes->second){
+            slots2.at( position2 ).push_back( lecture );
         }
 
     }
-
-    schedule1.calculateFitness();
-    schedule2.calculateFitness();
-
-    //switcheroo complete
 
 }
 
@@ -543,7 +545,6 @@ void swap(Schedule& first, Schedule& second){
 }
 
 /*comparator function for schedule's fitness, used in algorithm.cpp(selection)
-std::sort will use them to sort best and worst for ( elitism and weeding )
 This is a non-friend non-member function to ensure safety and encapsulation
 */
 bool compareSchedulesDesc(Schedule const *schedule1, Schedule const *schedule2){
