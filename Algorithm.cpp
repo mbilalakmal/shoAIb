@@ -56,11 +56,11 @@ void Algorithm::initialize(){
 void Algorithm::run(){
 
     while(
-        bestFitness < 1.0 &&
+        population.front()->getFitness() < 1.0 &&
+        // bestFitness < 1.0 &&
         currentGeneration < maxGenerations
         //also a time limit to break the loop
     ){
-
         reproduction();
         population.front()->printSchedule(false);
         currentGeneration++;
@@ -78,6 +78,11 @@ void Algorithm::run(){
 //the individual schedules in this population
 //will have already calculated their fitness
 void Algorithm::calculateFitness(){
+
+    //partially sort best And Worst
+    //Replace worst with new and set bestFitness
+    sortBestAndWorst();
+
     double sum = 0.0;
 
     //add up fitness of every schedule
@@ -95,9 +100,6 @@ void Algorithm::calculateFitness(){
         i->cumulativeProb   = currentCumProb + i->relativeFitness;
         currentCumProb      = i->cumulativeProb;
     }
-
-    //partially sort best And Worst
-    sortBestAndWorst();
 
 }
 
@@ -128,13 +130,10 @@ void Algorithm::reproduction(){
     for(int i = 0; i < populationSize; i++){
 
         //pick a random chromosome's index based on fitness
-        do{
-            one = selectForReproduction();
-        }while(one >= populationSize );
+        one = selectForReproduction();
 
         //copy it to the new generation
         delete newPopulation[i];
-        //newPopulation[i] = new Schedule( *( population[one] ) );
         newPopulation.at(i) = new Schedule( *(population.at(one)) );
 
     }
@@ -151,7 +150,7 @@ void Algorithm::reproduction(){
         Schedule &schedule1 = *( newPopulation.at(one) );
         Schedule &schedule2 = *( newPopulation.at(two) );
 
-        crossOver(schedule1, schedule2, seed);
+        crossover(schedule1, schedule2, seed);
 
         //mutate both chromosomes
         schedule1.mutation(seed);
@@ -178,10 +177,10 @@ void Algorithm::sortBestAndWorst(){
                     compareSchedulesAsc);
 
     //replace them with new chromosomes
-
     {
         int i = 0; auto it = population.rbegin();
-        for(; i < worstSize && it != population.rend(); i++, it++){
+        for(; i < worstSize && it != population.rend();
+            i++, it++){
             delete *( it );
             *( it ) = new Schedule(seed);
         }
