@@ -62,7 +62,15 @@ void Algorithm::run(){
         //also a time limit to break the loop
     ){
         reproduction();
-        population.front()->printSchedule(false);
+        if(currentGeneration%100 == 0){
+            cout << endl;
+            cout << "gen: " << currentGeneration
+            << " B: " << bestFitness
+            << " A:" << avgFitness;
+            cout << endl;
+        }
+
+        //population.front()->printSchedule(false);
         currentGeneration++;
     }
     //report best chromosome here?
@@ -70,6 +78,7 @@ void Algorithm::run(){
     /*
     FOR TESTING PURPOSE ONLY
     */
+    cout << "GEN: " << currentGeneration << endl;
     population.front()->printSchedule(true);
 }
 

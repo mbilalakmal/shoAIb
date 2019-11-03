@@ -393,6 +393,11 @@ void Schedule::printSchedule(bool full = false) const {
 
     if(!full)   return;
 
+    for(const auto& it: constraints){
+            cout << it << " ";
+    }
+    cout << endl;
+
     int day, spaceTime, roomID, time;
     int totalHours      = Specs::getInstance().getTotalHours();
     int numberOfRooms   = Specs::getInstance().getNumberOfRooms();
