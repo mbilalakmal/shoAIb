@@ -2,6 +2,7 @@
 #define LECTURE
 
 #include<list>
+#include<algorithm>
 #include "Course.hpp"
 #include "Teacher.hpp"
 #include "StudentSection.hpp"
@@ -40,15 +41,14 @@ class Lecture{
 		//returns whether another course class has a common section
 		bool sectionsOverlap(const Lecture& lecture ) const {
 
-			for(auto it = sections.begin(); it != sections.end(); it++){
-				for(auto it_c = lecture.getSections().begin();
-					it_c != lecture.getSections().end(); it_c++){
-					//If both course classes contain a section (ID)
-					if( (*it)->getId() == (*it_c)->getId() ){
-						return true;
-					}
-				}
+			auto &sections2 = lecture.getSections();
+			for(const auto& section: sections){
+				if(
+					sections2.end() !=
+					find(sections2.begin(), sections2.end(), section)
+				){	return true;}
 			}
+
 			//No common section
 			return false;
 		}
@@ -56,15 +56,14 @@ class Lecture{
 		//returns whether another course class has a common teacher
 		bool teachersOverlap(const Lecture& lecture ) const {
 
-			for(auto it = teachers.begin(); it != teachers.end(); it++){
-				for(auto it_c = lecture.getTeachers().begin();
-					it_c != lecture.getTeachers().end(); it_c++){
-					//If both course classes contain a teacher (ID)
-					if( (*it)->getId() == (*it_c)->getId() ){
-						return true;
-					}
-				}
+			auto &teachers2 = lecture.getTeachers();
+			for(const auto& teacher: teachers){
+				if(
+					teachers2.end() !=
+					find(teachers2.begin(), teachers2.end(), teacher)
+				){	return true;}
 			}
+
 			//No common teacher
 			return false;
 		}
@@ -75,9 +74,11 @@ class Lecture{
 		
 		const Course& getCourse() const {return *course;}
 
+		//returns const ref to assigned teachers
 		const list<Teacher*>& getTeachers() const
 			{return teachers;}
 
+		//returns const ref to enrolled sections
 		const list<StudentSection*>& getSections() const
 			{return sections;}
 
