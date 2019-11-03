@@ -82,7 +82,7 @@ class Specs{
 
 		int getTotalHours() const {return 4;}//totalHours;}
 
-		double getMutationRate() const {return 0.05;}//mutationRate;}
+		double getMutationRate() const {return 0.01;}//mutationRate;}
 
 		double getCrossoverRate() const {return 0.6;}//crossoverRate;}
 
@@ -92,11 +92,11 @@ class Specs{
 
 		int getPopulationSize() const {return 100;}//populationSize;}
 
-		int getMaxGenerations() const {return 1000;}//maxGenerations;}
+		int getMaxGenerations() const {return 2000;}//maxGenerations;}
 
-		int getBestSize() const {return 10;}//bestSize;}
+		int getBestSize() const {return 4;}//bestSize;}
 
-		int getWorstSize() const {return 0;}//worstSize;}
+		int getWorstSize() const {return 4;}//worstSize;}
 
 		/*^^^
 		FOR TESTING PURPOSE ONLY!!!
