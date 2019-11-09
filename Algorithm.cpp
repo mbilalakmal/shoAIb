@@ -113,7 +113,7 @@ void Algorithm::calculateFitness(){
 }
 
 //fitness propotionate selection returns index of schedule
-int Algorithm::selectForReproduction(){
+int Algorithm::rouletteSelection(){
 
     double x = r8_uniform_ab ( 0.0, 1.0, seed );
     if( x < population.at(0)->cumulativeProb ) return 0;
@@ -130,6 +130,51 @@ int Algorithm::selectForReproduction(){
     return 0;
 }
 
+//tournament selection returns index of schedule
+int Algorithm::tournamentSelection(int selectionPressure = 10){
+
+    //index of schedule with max fitness within the participants
+    int maxIndex = 0;
+    //max fitness within the participants
+    double maxFitness = 0.0;
+
+
+    /*
+    tournament selection with replacement
+    */
+
+    // for(int i = 0; i < selectionPressure; i++){
+    //     //pick a random index
+    //     int randex = i4_uniform_ab(0, populationSize - 1, seed);
+    //     if( population[randex]->getFitness() > maxFitness){
+    //         maxIndex    = randex;
+    //         maxFitness  = population[randex]->getFitness();
+    //     }
+    // }
+
+
+    /*
+    No-replacement tournament selection
+    */
+    //number of schedules in this tournament
+    unordered_set<int> participants;
+
+    while( participants.size() < selectionPressure )
+    {
+        int y = i4_uniform_ab(0, populationSize - 1, seed);
+        bool inserted = participants.insert(y).second;
+
+        //skip to next iteration if it was not inserted
+        if(!inserted)   continue;
+        if( population[y]->getFitness() > maxFitness){
+            maxIndex = y;
+            maxFitness = population[y]->getFitness();
+        }
+    }
+
+    return maxIndex;
+}
+
 void Algorithm::reproduction(){
 
     int one, two;
@@ -139,7 +184,8 @@ void Algorithm::reproduction(){
     for(int i = 0; i < populationSize; i++){
 
         //pick a random chromosome's index based on fitness
-        one = selectForReproduction();
+        one = rouletteSelection();
+        // one = tournamentSelection();
 
         //copy it to the new generation
         delete newPopulation[i];

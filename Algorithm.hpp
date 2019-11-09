@@ -71,8 +71,11 @@ class Algorithm{
         //calculate relative fitness for all schedules and get avg and best
         void calculateFitness();
 
-        //fitness propotionate selection - returns one schedule's index
-        int selectForReproduction();
+        //(schedule index) fitness propotionate selection
+        int rouletteSelection();
+
+        // (schedule index) tournament selection (selection pressure)
+        int tournamentSelection(int);
 
         /*
         (1)selects chromosome from current generation and adds
