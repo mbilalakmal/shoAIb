@@ -27,7 +27,7 @@ class Schedule{
         double  cumulativeProb;
 
         //default constructor
-		Schedule(int&);
+		Schedule();
 		
         //copy constructor
         Schedule(const Schedule&);
@@ -37,6 +37,9 @@ class Schedule{
         
         //destructor
         ~Schedule();
+
+        //initialize schedule with random slots
+        void initialize(int&);
 
         //mutation occurs by randomly swapping some classes within a schedule
         void mutation(int&);

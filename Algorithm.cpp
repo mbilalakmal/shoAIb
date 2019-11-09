@@ -44,7 +44,8 @@ void Algorithm::initialize(){
 
     for(int i = 0; i < populationSize; i++){
         delete population[i];
-        population.at(i) = new Schedule(seed);
+        population.at(i) = new Schedule();
+        population.at(i)->initialize(seed);
     }
 
     currentGeneration = 0;
@@ -237,7 +238,8 @@ void Algorithm::sortBestAndWorst(){
         for(; i < worstSize && it != population.rend();
             i++, it++){
             delete *( it );
-            *( it ) = new Schedule(seed);
+            *( it ) = new Schedule();
+            (*it)->initialize(seed);
         }
 
     }

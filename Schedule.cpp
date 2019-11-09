@@ -12,7 +12,7 @@ using namespace std;
 //describes a whole week's schedule in time-space slots occupied by course classes
 
 //default constructor
-Schedule::Schedule(int &seed){
+Schedule::Schedule(){
     //resize slots vector
     slots.resize(
         Specs::getInstance().getWeekDays() *
@@ -27,6 +27,40 @@ Schedule::Schedule(int &seed){
         Specs::getInstance().getNumberOfConstraints()
         //Number of hard+soft constraints * classes FROM Specs
     );
+
+}
+
+//copy constructor
+Schedule::Schedule(const Schedule& schedule){
+    //copy rhs entries to this schedule
+
+    slots       = schedule.slots;
+    classes     = schedule.classes;
+
+    constraints = schedule.constraints;
+    fitness     = schedule.fitness;
+
+}
+
+//copy assignment operator
+Schedule& Schedule::operator = (Schedule schedule){
+    //this schedule is swapped with temporary
+    swap(*this, schedule);
+    //swapped is returned while the old's lifecycle ends here
+
+    return *this;
+}
+
+//destructor
+Schedule::~Schedule(){
+    slots.clear();
+    classes.clear();
+    constraints.clear();
+    fitness = 0;
+}
+
+//initialize schedule with random slots
+void Schedule::initialize(int &seed){
 
     //get classes and place at random slots
 
@@ -101,35 +135,6 @@ Schedule::Schedule(int &seed){
     relativeFitness = 0.0;
     cumulativeProb = 0.0;
 
-}
-
-//copy constructor
-Schedule::Schedule(const Schedule& schedule){
-    //copy rhs entries to this schedule
-
-    slots       = schedule.slots;
-    classes     = schedule.classes;
-
-    constraints = schedule.constraints;
-    fitness     = schedule.fitness;
-
-}
-
-//copy assignment operator
-Schedule& Schedule::operator = (Schedule schedule){
-    //this schedule is swapped with temporary
-    swap(*this, schedule);
-    //swapped is returned while the old's lifecycle ends here
-
-    return *this;
-}
-
-//destructor
-Schedule::~Schedule(){
-    slots.clear();
-    classes.clear();
-    constraints.clear();
-    fitness = 0;
 }
 
 //mutation occurs by randomly swapping some classes within a schedule
