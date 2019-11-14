@@ -1,36 +1,50 @@
 #ifndef TEACHER
 #define TEACHER
 
-#include<string>
-#include<list>
 #include<vector>
 using namespace std;
 
 class Lecture;
 
-//describes a teacher which is assigned to one or more course classes
+//maximum lectures a teacher can be assigned
+#define MAXLECTURES 10
+
+/*
+Describes a teacher with 5 attributes including assigned
+lectures and available slots according to requirements & policies
+
+CONSTRAINTS:
+1. Day, Room, & Time assigned can be specified
+2. Teacher must not have more than 2 consecutive classes
+3. Teacher must have a day off
+*/
 class Teacher{
 	
 	public:
 		
-		Teacher(	int		id,
-					string& name,
-					string&	department,
-					bool	isSenior,
-					string	building,
-					int		floor)
-				: 	id(id),
-					name(name),
-					department(department),
-					isSenior(isSenior),
-					building(building),
-					floor(floor){}
+		Teacher(
+			int				id,
+			const string&	name,
+			const string&	department,
+			const vector<bool>&
+							availableSlots
+			
+		):
+			id(id),
+			name(name),
+			department(department),
+			availableSlots(availbleSlots)
+		{
+			lectures.reserve(MAXLECTURES);
+		}
 
 		~Teacher(){
-			//does not delete the objects
+			//this only removes the pointers
+			//from vector without deleting
 			lectures.clear();
 		}
 
+		//this will be called when creating lecture entries
 		void addLecture(Lecture* lecture){
 			lectures.push_back(lecture);
 		}
@@ -41,31 +55,20 @@ class Teacher{
 		
 		const string& getDepartment() const {return department;}
 
-		bool getIsSenior() const {return isSenior;}
+		const vector<Lecture*>& getLectures() const {return lectures;}
 
-		const string& getBuilding() const {return building;}
-
-		int getFloor() const {return floor;}
-
-		const list<Lecture*>& getLectures() const
-			{return lectures;}
+		const vector<bool>& getAvailableSlots() const {return availableSlots;}
 	
 	private:
 
-	int		id;				//unique identifier for the teacher
-	string	name;			//full name of the teacher
-	string	department;		//dept of the teacher
+	const int		id;
+	const string	name;
+	const string	department;
 
-	bool	isSenior;		//true = teacher is a doctor (phd) senior
+	//lectures assigned to this teacher
+	vector<Lecture*>	lectures;
 
-	/*
-	Teacher's location
-	*/
-	string	building;		//CS, EE
-	int		floor;			//0, 1, 2(in EE)
-
-	//course classes taught by the teacher
-	list<Lecture*>	lectures;
+	const vector<bool>	availableSlots;
 };
 
 #endif
