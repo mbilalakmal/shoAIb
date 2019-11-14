@@ -1,44 +1,68 @@
 #ifndef LECTURE
 #define LECTURE
 
-#include<list>
+#include<vector>
 #include<algorithm>
+
 #include "Course.hpp"
 #include "Teacher.hpp"
 #include "StudentSection.hpp"
 
 using namespace std;
 
-//describes a union of a course, a teacher, and one or more sections
+//maximum teachers assigned to a lecture
+#define MAXTEACHERS 2
+//maximum sections enrolled in a lecture
+#define MAXSECTIONS 10
+
+/*
+Describes a lecture with 5 attributes including assigned
+teachers and enrolled sections with cumulative strength
+*/
 class Lecture{
 	
 	public:
 		
-		Lecture(	Course*		course)
-					:	id(nextId++),
-						course(course),
-						strength(0){}
+		Lecture(
+			Course*	course
+		):
+			id(nextId++),
+			course(course),
+			strength(0)
+		{
+			teachers.reserve(MAXTEACHERS);
+			sections.reserve(MAXSECTIONS);
+		}
 		
-		~Lecture(){}
+		~Lecture(){
+			//this only removes the pointers
+			//from vector without deleting
+			teachers.clear();
+			sections.clear();
+		}
 
-		//add this course class to the given section &
-		//add the section to this course class' included section
+		/*
+		add this lecture to the given section & add
+		the section to this lecture's included sections
+		*/
 		void addSection(StudentSection* section){
 			section->addLecture(this);
 			sections.push_back(section);
 
-			//add the section's strength to the course class
+			//add the section's strength
 			strength += section->getStrength();
 		}
 
-		//add this course class to the given teacher &
-		//add the teacher to this course class' teachers
+		/*
+		add this lecture to the given teacher & add
+		the teacher to this lecture's assigned sections
+		*/
 		void addTeacher(Teacher* teacher){
 			teacher->addLecture(this);
 			teachers.push_back(teacher);
 		}
 
-		//returns whether another course class has a common section
+		//Returns whether another lecture has a common section
 		bool sectionsOverlap(const Lecture& lecture ) const {
 
 			auto &sections2 = lecture.getSections();
@@ -53,7 +77,7 @@ class Lecture{
 			return false;
 		}
 
-		//returns whether another course class has a common teacher
+		//Returns whether another lecture has a common teacher
 		bool teachersOverlap(const Lecture& lecture ) const {
 
 			auto &teachers2 = lecture.getTeachers();
@@ -74,30 +98,29 @@ class Lecture{
 		
 		const Course& getCourse() const {return *course;}
 
-		//returns const ref to assigned teachers
-		const list<Teacher*>& getTeachers() const
-			{return teachers;}
+		const vector<Teacher*>& getTeachers() const {return teachers;}
 
-		//returns const ref to enrolled sections
-		const list<StudentSection*>& getSections() const
-			{return sections;}
+		const vector<StudentSection*>& getSections() const {return sections;}
 
 		//Reset ID counter to 0
 		static void RestartIDs() {nextId = 0;}
 	
 	private:
 
-		static int	nextId;		//CCId counter to assign IDs
+		const int		id;
+		int				strength;
 
-		int			id;			//unique & auto-inc
-		int			strength;	//sum of strengths of sections
-		Course*		course;		//course reference
+		const Course*	course;
 		
-		//teacher(s) teaching this course class (multiple for freshies' labs)
-		list<Teacher*> teachers;
+		//teacher(s) assigned to this lecture
+		vector<Teacher*> teachers;
 
-		//atomic sections included in this course class
-		list<StudentSection*> sections;
+		//section(s) enrolled in this lecture
+		vector<StudentSection*> sections;
+
+		//LectureId counter to assign IDs
+		static int		nextId;
+
 };
 
 //Init ID counter
