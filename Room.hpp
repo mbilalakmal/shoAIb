@@ -1,64 +1,54 @@
 #ifndef ROOM
 #define ROOM
 
-#include<string>
+#include<vector>
 using namespace std;
 
-//describes any generic room where a lecture/lab can be held
+/*
+Describes a room with 4 attributes including availableSlots
+for room according to requirements and policies
+
+CONSTRAINTS:
+1. Day & Time available can be specified
+2. Room capacity should be greater than students' strength
+*/
 class Room{
 	
 	public:
 		
-		Room(	int		capacity,
-				string&	name,
-				string&	building,
-				int		floor,
-				bool	isComputerLab,
-				bool	isElectricalLab,
-				bool	hasComputer)
-			:	id(nextId++),
-				name(name),
-				capacity(capacity),
-				building(building),
-				floor(floor),
-				isComputerLab(isComputerLab),
-				isElectricalLab(isElectricalLab),
-				hasComputer(hasComputer){}
+		Room(
+			const string&	name,
+			int				capacity,
+			const vector<bool>&
+							availableSlots
+		):
+			id(nextId++),
+			name(name),
+			capacity(capacity),
+			availableSlots(availableSlots)
+		{}
 
 		int getId() const {return id;}
 		
+		const string& getName() const {return name;}
+
 		int getCapacity() const {return capacity;}
 
-		const string& getName() const {return name;}
-		
-		const string& getBuilding() const {return building;}
-		
-		int getFloor() const {return floor;}
-
-		bool getIsComputerLab() const {return isComputerLab;}
-
-		bool getIsElectricalLab() const {return isElectricalLab;}
-
-		bool getHasComputer() const {return hasComputer;}
+		const vector<bool>& getAvailableSlots() const {return availableSlots;}
 
 		//Reset ID counter to 0
 		static void restartIDs() {nextId = 0;}
 		
 	private:
-		
-		static int nextId;			//RoomId counter to assign IDs
 
-		int		id;					//unique & auto-inc (starting 0)!!
-		int		capacity;			//50, 100
-		string	name;				//CR-10, R-109
-		string	building;			//CS, EE
-		int		floor;				//0, 1, 2(in EE)
+		const int		id;
+		const string	name;
+		const int		capacity;
 
-		bool	isComputerLab;		//true = is a computer lab
-		bool	isElectricalLab;	//true = is an electrical lab
-		
-		// bool	hasProjector;		//Not needed
-		bool	hasComputer;		//true = has a viper in class
+		const vector<bool>	availableSlots;
+
+		//RoomId counter to assign IDs
+		static int		nextId;
 		
 };
 
