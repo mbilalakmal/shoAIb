@@ -1,66 +1,83 @@
 #ifndef COURSE
 #define COURSE
 
-#include<string>
 #include<vector>
 using namespace std;
 
-//describes a course which can be core/elective & theory/lab
+/*
+Describes a course offered with 9 attributes including
+availableSlots for course according to requirements & policies
+
+CONSTRAINTS:
+1. Day, Room, & Time assigned can be specified
+2. Lab courses should have continuous slots
+3. Theory courses should be split across days
+4. Theory courses should be schedule before their
+	lab courses for first-year
+5. Repeat course can be scheduled alongside thier
+	successor courses (from the first to last)
+6. Elective courses offered in pairs can be scheduled
+	alongside each other
+*/
 class Course{
+
 	public:
 		
-		Course(	int		id,
-				string&	courseCode,
-				string&	title,
-				int		duration,
-				string&	department,
-				string&	school,
-				bool	isCoreCourse,
-				bool	isLabCourse,
-				bool	needsComputerLab,
-				bool	needsElectricalLab
-				)
-			:	id(id),
-				courseCode(courseCode),
-				title(title),
-				duration(duration),
-				department(department),
-				school(school),
-				isCoreCourse(isCoreCourse),
-				isLabCourse(isLabCourse){}
+		Course(
+			const string&	courseCode,
+			const string&	department,
+			int				offeredToBatch,
+			const string&	school,
+			int				duration,
+			bool			isCoreCourse,
+			bool			isLabCourse,
+			bool			isRepeatCourse,
+			const vector<bool>&
+							availableSlots
+		):
+			courseCode(courseCode),
+			department(department),
+			offeredToBatch(offeredToBatch),
+			school(school),
+			duration(duration),
+			isCoreCourse(isCoreCourse),
+			isLabCourse(isLabCourse),
+			isRepeatCourse(isRepeatCourse),
+			availableSlots(availableSlots)
+		{}
 		
-		int getId() const {return id;}
-
 		const string& getCourseCode() const {return courseCode;}
 
 		const string& getDepartment() const {return department;}
+
+		int getOfferedToBatch() const {return offeredToBatch;}
 		
 		const string& getSchool() const {return school;}
-		
-		const string& getTitle() const {return title;}
-
-		const string& getShortTitle() const {return shortTitle;}
 
 		int getDuration() const {return duration;}
-
-		const vector<int>& getOfferedToBatches() const {return offeredToBatches;}
 
 		bool getIsCoreCourse() const {return isCoreCourse;}
 
 		bool getIsLabCourse() const { return isLabCourse;}
+
+		bool getIsRepeatCourse() const { return isRepeatCourse;}
+
+		const vector<bool>& getAvailableSlots() const {return availableSlots;}
 		
 	private:
 		
-		int			id;					//unique course identifier
-		string		courseCode;			//CS205
-		string		department;			//CS OR EE OR BBA
-		string		school;				//CS OR EE OR MG OR MT OR SS
-		string		title;				//Computer Architecture
-		string		shortTitle;			//CA, PROB, OS-LAB
-		int			duration;			//1, 3, 4
-		vector<int>	offeredToBatches;	//2017 & 2018
-		bool		isCoreCourse;		//true = is a core course
-		bool		isLabCourse;		//true = is a lab course
+		const string	courseCode;
+		const string	department;
+		const int		offeredToBatch;
+		const string	school;
+		
+		const int		duration;
+		
+		const bool		isCoreCourse;
+		const bool		isLabCourse;
+		const bool		isRepeatCourse;
+
+		const vector<bool>	availableSlots;
 	
 };
 
