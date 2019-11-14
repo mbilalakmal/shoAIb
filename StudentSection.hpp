@@ -1,33 +1,49 @@
 #ifndef STUDENTSECTION
 #define STUDENTSECTION
 
-#include<string>
-#include<list>
+#include<vector>
 using namespace std;
 
 class Lecture;
 
-//describes an atomic student section (A1 OR C2)
+//maximum lectures a section can be offered
+#define MAXLECTURES 16
+
+/*
+Describes a section with 6 attributes including offered lectures
+
+CONSTRAINTS:
+1. Only senior-year can have a day off
+2. Section must not have more than one lab on any day
+3. Section must not have zero free hours on any day
+*/
 class StudentSection{
 	
 	public:
 		
-		StudentSection(	int		id,
-						string&	name,
-						int		strength,
-						int		batch,
-						string&	department)
-					:	id(id),
-						name(name),
-						strength(strength),
-						batch(batch),
-						department(department){}
+		StudentSection(
+			int				id,
+			const string&	name,
+			int				strength,
+			int				batch,
+			const string&	department
+		):
+			id(id),
+			name(name),
+			strength(strength),
+			batch(batch),
+			department(department)
+		{
+			lectures.reserve(MAXLECTURES);
+		}
 
 		~StudentSection(){
-			//does not delete the objects
+			//this only removes the pointers
+			//from vector without deleting
 			lectures.clear();
 		}
 
+		//this will be called when creating lecture entries
 		void addLecture(Lecture* lecture){
 			lectures.push_back(lecture);
 		}
@@ -42,19 +58,18 @@ class StudentSection{
 
 		const string& getDepartment() const {return department;}
 		
-		const list<Lecture*>& getLectures()
-		const	{return lectures;}
+		const vector<Lecture*>& getLectures() const {return lectures;}
 	
 	private:
 
-	int		id;			//unique identifier for the section
-	string	name;		//A1, C2, etc
-	int		strength;	//Number of Students ~25
-	int		batch;		//year of the batch's admission (2017)
-	string	department;	//dept of the section (CS, EE, SE)
+	const int		id;
+	const string	name;
+	const int		strength;
+	const int		batch;
+	const string	department;
 
-	//course classes the section is enrolled in
-	list<Lecture*>	lectures;	
+	//lectures offered to this section
+	vector<Lecture*>	lectures;	
 
 };
 
