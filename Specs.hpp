@@ -1,14 +1,13 @@
 #ifndef SPECS
 #define SPECS
 
-#include<list>
 #include<unordered_map>
 #include<fstream>
 
 using namespace std;
 
-class Course;
 class Room;
+class Course;
 class Lecture;
 class Teacher;
 class StudentSection;
@@ -36,28 +35,28 @@ class Specs{
         //read the file and parse objects from JSON
 		void parseFile(string&);
 		
-        //return pointer to a teacher OR NULL if teacher doesn't exist
-		Teacher* getTeacherById(int id){
+        //return pointer to a teacher OR nullptr if teacher doesn't exist
+		Teacher* getTeacherById(const string& id){
 			auto it = teachers.find( id );
-			return ( it != teachers.end() ? it->second: NULL );
+			return ( it != teachers.end() ? it->second: nullptr );
 		}
 
-        //return pointer to a section OR NULL if section doesn't exist
-		StudentSection* getSectionById(int id){
+        //return pointer to a section OR nullptr if section doesn't exist
+		StudentSection* getSectionById(const string& id){
             auto it = sections.find( id );
-			return ( it != sections.end() ? it->second: NULL );
+			return ( it != sections.end() ? it->second: nullptr );
 		}
 		
-        //return pointer to a room OR NULL if room doesn't exist
+        //return pointer to a room OR nullptr if room doesn't exist
 		Room* getRoomById(int id){
             auto it = rooms.find( id );
-			return ( it != rooms.end() ? it->second: NULL );
+			return ( it != rooms.end() ? it->second: nullptr );
 		}
 		
-        //return pointer to a course OR NULL if course doesn't exist
-		Course* getCourseById(int id){
-            auto it = courses.find( id );
-			return ( it != courses.end() ? it->second: NULL );
+        //return pointer to a course OR nullptr if course doesn't exist
+		Course* getCourseById(const string& courseCode){
+            auto it = courses.find( courseCode );
+			return ( it != courses.end() ? it->second: nullptr );
 		}
 
 		int getNumberOfTeachers() const { return teachers.size();}
@@ -68,7 +67,7 @@ class Specs{
 
 		int getNumberOfCourses() const { return courses.size(); }
 		
-		const list<Lecture*>& getLectures() const {return lectures;}
+		const vector<Lecture*>& getLectures() const {return lectures;}
 		
 		int getNumberOfLectures() const {return lectures.size();}	
 		
@@ -78,19 +77,19 @@ class Specs{
 
 		int getNumberOfConstraints() const {return 4;}//numberOfConstraints;}
 
-		int getWeekDays() const {return	4;}//weekDays;}
+		int getWeekDays() const {return	3;}//weekDays;}
 
 		int getTotalHours() const {return 4;}//totalHours;}
 
-		double getMutationRate() const {return 0.01;}//mutationRate;}
+		double getMutationRate() const {return 0.05;}//mutationRate;}
 
-		double getCrossoverRate() const {return 0.6;}//crossoverRate;}
+		double getCrossoverRate() const {return 0.65;}//crossoverRate;}
 
 		int getMutationPoints() const {return 2;}//mutationPoints;}
 
 		int getCrossoverPoints() const {return 2;}//crossoverPoints;}
 
-		int getPopulationSize() const {return 100;}//populationSize;}
+		int getPopulationSize() const {return 60;}//populationSize;}
 
 		int getMaxGenerations() const {return 2000;}//maxGenerations;}
 
@@ -117,16 +116,16 @@ class Specs{
 
 		
 		//courses mapped with their ids
-		unordered_map<int, Course*>		courses;
+		unordered_map<string, Course*>		courses;
 		//rooms mapped with their ids
 		unordered_map<int, Room*>		rooms;
 		//teachers mapped with their ids
-		unordered_map<int, Teacher*>	teachers;
+		unordered_map<string, Teacher*>	teachers;
 		//sections mapped with their ids
-		unordered_map<int, StudentSection*>	sections;
+		unordered_map<string, StudentSection*>	sections;
 		//list of all parsed course classes
 		
-		list<Lecture*>	lectures;
+		vector<Lecture*>	lectures;
 
 		//number of constraints for each class(related to room, course, teacher, and section)
 		int		numberOfConstraints;

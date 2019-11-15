@@ -2,7 +2,6 @@
 #define SCHEDULE
 
 #include<vector>
-#include<list>
 #include<unordered_map>
 #include"Lecture.hpp"
 using namespace std;
@@ -43,16 +42,14 @@ class Schedule{
 
         //mutation occurs by randomly swapping some classes within a schedule
         void mutation(int&);
-		
-		double getFitness() const {return fitness;}
-		
+
+        const vector< vector<Lecture*> >& getSlots() const {return slots;}
+
+        const unordered_map<Lecture*, vector<int> >& getClasses() const {return classes;}
+
 		const vector<bool>& getConstraints() const {return constraints;}
 
-        const unordered_map<Lecture*, vector<int> >&
-            getClasses() const {return classes;}
-
-        const vector< list< Lecture* > >&
-            getSlots() const {return slots;}
+        double getFitness() const {return fitness;}
 
         /*
         FOR TESTING PURPOSE ONLY
@@ -62,12 +59,10 @@ class Schedule{
 	private:
 
         //day * time_slot * rooms
-		vector< list< Lecture* > >
-            slots;
+		vector< vector<Lecture*> > slots;
 
         //Lecture mapped to it's slots
-        unordered_map< Lecture*, vector< int > >
-            classes;
+        unordered_map< Lecture*, vector<int> > classes;
 
         //used to calc fitness [true = that constraint is fulfilled]
         vector<bool> constraints;

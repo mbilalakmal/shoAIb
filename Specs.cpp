@@ -64,16 +64,18 @@ void Specs::parseFile(string& fileName) {
 
     //take input from json here
 
-	int id, cap, floor, dur;
-	string name, building, cc, title, dept, sch;
-	bool isCL, isEL, hasC, isCC, isLC, needsCL, needsEL, isSenior;
+	int cap, dur, batch;
+	string id, name, cc, dept, sch;
+	bool isCC, isLC, isRC;
+	vector<bool> Aslots(60, 1);
+	vector<bool> Rslots(12, 1);
 
 	fstream input(fileName);
 
 	// cout << "10 ROOMS: cap name bu fl isCL isEL hC" << endl;
 	for(int i = 0; i < 5; i++){
-		input >> cap >> name >> building >> floor >> isCL >> isEL >> hasC;
-		Room *room = new Room(cap, name, building, floor, isCL, isEL, hasC);
+		input >> cap >> name;
+		Room *room = new Room(name, cap, Rslots);
 		rooms.insert(
 			pair<int, Room*>
 			(room->getId(), room)
@@ -82,36 +84,36 @@ void Specs::parseFile(string& fileName) {
 
 	// cout << "10 COURSES: id code title dur dept school isCC isLC needsCL needsEL" << endl;
 	for(int i = 0; i < 10; i++){
-		input >> id >> cc >> title >> dur >> dept >> sch >> isCC >> isLC >> needsCL >> needsEL;
-		Course *course = new Course(id, cc, title, dur, dept, sch, isCC, isLC, needsCL, needsEL);
+		input >> cc >> dept >> sch >> dur >> isCC >> isLC >> isRC;
+		Course *course = new Course(cc, dept, batch, sch, dur, isCC, isLC, isRC, Aslots);
 		courses.insert(
-			pair<int, Course*>
-			(course->getId(), course)
+			pair<string, Course*>
+			(course->getCourseCode(), course)
 		);
 	}
 
 	// cout << "10 TEACHERS: id name dept isSin bu floor" << endl;
 	for(int i = 0; i < 5; i++){
-		input >> id >> name >> dept >> isSenior >> building >> floor;
-		Teacher *teacher = new Teacher(id, name, dept, isSenior, building, floor);
+		input >> id >> name >> dept;
+		Teacher *teacher = new Teacher(id, name, dept, Aslots);
 		teachers.insert(
-			pair<int, Teacher*>
+			pair<string, Teacher*>
 			(teacher->getId(), teacher)
 		);
 	}
 
-	int strength, batch;
+	int strength;
 
 	for(int i = 0; i < 5; i++){
 		input >> id >> name >> strength >> batch >> dept;
 		StudentSection *section = new StudentSection(id, name, strength, batch, dept);
 		sections.insert(
-			pair<int, StudentSection*>
+			pair<string, StudentSection*>
 			(section->getId(), section)
 		);
 	}
 
-	int cid, tid,  sid;
+	string cid, tid,  sid;
 
 	for(int i = 0; i < 10; i++){
 		input >> cid >> tid >> sid;

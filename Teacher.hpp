@@ -7,7 +7,7 @@ using namespace std;
 class Lecture;
 
 //maximum lectures a teacher can be assigned
-#define MAXLECTURES 10
+#define MAX_T_LECT 10
 
 /*
 Describes a teacher with 5 attributes including assigned
@@ -35,7 +35,7 @@ class Teacher{
 			department(department),
 			availableSlots(availableSlots)
 		{
-			lectures.reserve(MAXLECTURES);
+			lectures.reserve(MAX_T_LECT);
 		}
 
 		~Teacher(){

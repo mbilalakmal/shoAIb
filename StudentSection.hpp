@@ -7,7 +7,7 @@ using namespace std;
 class Lecture;
 
 //maximum lectures a section can be offered
-#define MAXLECTURES 16
+#define MAX_S_LECT 16
 
 /*
 Describes a section with 6 attributes including offered lectures
@@ -34,7 +34,7 @@ class StudentSection{
 			batch(batch),
 			department(department)
 		{
-			lectures.reserve(MAXLECTURES);
+			lectures.reserve(MAX_S_LECT);
 		}
 
 		~StudentSection(){
