@@ -23,7 +23,7 @@ class Teacher{
 	public:
 		
 		Teacher(
-			int				id,
+			const string&	id,
 			const string&	name,
 			const string&	department,
 			const vector<bool>&
@@ -33,7 +33,7 @@ class Teacher{
 			id(id),
 			name(name),
 			department(department),
-			availableSlots(availbleSlots)
+			availableSlots(availableSlots)
 		{
 			lectures.reserve(MAXLECTURES);
 		}
@@ -49,7 +49,7 @@ class Teacher{
 			lectures.push_back(lecture);
 		}
 		
-		int getId() const {return id;}
+		const string& getId() const {return id;}
 		
 		const string& getName() const {return name;}
 		
@@ -61,7 +61,7 @@ class Teacher{
 	
 	private:
 
-	const int		id;
+	const string	id;
 	const string	name;
 	const string	department;
 

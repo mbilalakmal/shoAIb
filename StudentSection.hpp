@@ -22,7 +22,7 @@ class StudentSection{
 	public:
 		
 		StudentSection(
-			int				id,
+			string			id,
 			const string&	name,
 			int				strength,
 			int				batch,
@@ -48,7 +48,7 @@ class StudentSection{
 			lectures.push_back(lecture);
 		}
 
-		int getId() const {return id;}
+		const string& getId() const {return id;}
 		
 		const string& getName() const {return name;}
 		
@@ -62,7 +62,7 @@ class StudentSection{
 	
 	private:
 
-	const int		id;
+	const string	id;
 	const string	name;
 	const int		strength;
 	const int		batch;
