@@ -10,10 +10,10 @@ class Lecture;
 #define MAX_T_LECT 10
 
 //maximum lectures a teacher can teach consecutively
-#define MAX_CONT_LECT 2
+#define MAX_T_CONT_LECT 3
 
 //maximum lectures a teacher can teach on a day
-#define MAX_DAILY_LECT 4
+#define MAX_T_DAILY_LECT 4
 
 /*
 Describes a teacher with 5 attributes including assigned
@@ -65,8 +65,6 @@ class Teacher{
 
 		bool getAvailableSlot(int position) const {return availableSlots[position];}
 
-		const vector<bool>& getAvailableSlots() const {return availableSlots;}
-	
 	private:
 
 	const string	id;

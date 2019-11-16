@@ -64,8 +64,6 @@ class Course{
 
 		bool getAvailableSlot(int position) const {return availableSlots[position];}
 
-		const vector<bool>& getAvailableSlots() const {return availableSlots;}
-		
 	private:
 		
 		const string	courseCode;
