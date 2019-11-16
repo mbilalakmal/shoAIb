@@ -34,6 +34,8 @@ class Room{
 
 		int getCapacity() const {return capacity;}
 
+		bool getAvailableSlot(int position) const {return availableSlots[position];}
+
 		const vector<bool>& getAvailableSlots() const {return availableSlots;}
 
 		//Reset ID counter to 0

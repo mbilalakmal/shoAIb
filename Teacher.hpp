@@ -9,6 +9,12 @@ class Lecture;
 //maximum lectures a teacher can be assigned
 #define MAX_T_LECT 10
 
+//maximum lectures a teacher can teach consecutively
+#define MAX_CONT_LECT 2
+
+//maximum lectures a teacher can teach on a day
+#define MAX_DAILY_LECT 4
+
 /*
 Describes a teacher with 5 attributes including assigned
 lectures and available slots according to requirements & policies
@@ -56,6 +62,8 @@ class Teacher{
 		const string& getDepartment() const {return department;}
 
 		const vector<Lecture*>& getLectures() const {return lectures;}
+
+		bool getAvailableSlot(int position) const {return availableSlots[position];}
 
 		const vector<bool>& getAvailableSlots() const {return availableSlots;}
 	

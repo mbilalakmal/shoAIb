@@ -62,6 +62,8 @@ class Course{
 
 		bool getIsRepeatCourse() const { return isRepeatCourse;}
 
+		bool getAvailableSlot(int position) const {return availableSlots[position];}
+
 		const vector<bool>& getAvailableSlots() const {return availableSlots;}
 		
 	private:
