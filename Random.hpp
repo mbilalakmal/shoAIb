@@ -2,6 +2,7 @@
 #define RANDOM
 
 #include<cmath>
+#include<ctime>
 
 /*
 contains two functions - one returns ints, other returns doubles
@@ -11,6 +12,8 @@ both modify the seed during execution
 
 //returns a scaled pseudorandom I4 between a and b (inclusive)
 int i4_uniform_ab ( int a, int b, int &seed ){
+
+    if(seed == 0){    seed = time(nullptr);}
 
     int c;
     const int i4_huge = 2147483647;
@@ -37,6 +40,8 @@ int i4_uniform_ab ( int a, int b, int &seed ){
 
 //returns a scaled pseudorandom R8 between a and b (inclusive)
 double r8_uniform_ab ( double a, double b, int &seed ){
+
+    if(seed == 0){    seed = time(nullptr);}
 
     int i4_huge = 2147483647;
     int k;
