@@ -10,10 +10,12 @@ class Lecture;
 #define MAX_S_LECT 16
 
 //maximum lectures a section can attend consecutively
-#define MAX_S_CONT_LECT 4
+#define MAX_S_CONT_LECT 5
 
 //maximum lectures a section can attend on a day
 #define MAX_S_DAILY_LECT 7
+
+#define SENIOR_YEAR 2016
 
 /*
 Describes a section with 6 attributes including offered lectures

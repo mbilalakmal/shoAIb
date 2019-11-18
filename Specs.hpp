@@ -73,7 +73,6 @@ class Specs{
 		
 		/*
 		FOR TESTING PURPOSE ONLY!!!
-		*/
 
 		int getNumberOfConstraints() const {return 4;}//numberOfConstraints;}
 
@@ -96,16 +95,13 @@ class Specs{
 		int getBestSize() const {return 4;}//bestSize;}
 
 		int getWorstSize() const {return 4;}//worstSize;}
-
-		/*^^^
-		FOR TESTING PURPOSE ONLY!!!
 		*/
 
 		bool getIsEmpty() const {return isEmpty;}
 
 		static Specs& getInstance() { return instance;}
 	
-	private:
+	// private:
 		
 		//global static instance of specifications
 		static Specs	instance;

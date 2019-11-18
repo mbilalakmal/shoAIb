@@ -67,8 +67,8 @@ void Specs::parseFile(string& fileName) {
 	int cap, dur, batch;
 	string id, name, cc, dept, sch;
 	bool isCC, isLC, isRC;
-	vector<bool> Aslots(60, 1);
-	vector<bool> Rslots(12, 1);
+	vector<bool> Aslots(200, 1);
+	vector<bool> Rslots(40, 1);
 
 	fstream input(fileName);
 

@@ -15,6 +15,8 @@ class Lecture;
 //maximum lectures a teacher can teach on a day
 #define MAX_T_DAILY_LECT 4
 
+#define MAX_T_WEEKDAYS 4
+
 /*
 Describes a teacher with 5 attributes including assigned
 lectures and available slots according to requirements & policies
