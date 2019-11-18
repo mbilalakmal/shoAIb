@@ -123,10 +123,18 @@ void Specs::parseFile(string& fileName) {
 		Lecture *lecture = new Lecture(c);
 		lecture->addSection(s);
 		lecture->addTeacher(t);
-		s->addLecture(lecture);
-		t->addLecture(lecture);
 		lectures.push_back(lecture);
 	}
+
+	cout << "L:" << lectures.size() << endl;
+
+	for(const auto& teacher: teachers){
+        cout << teacher.second->getName();
+        cout << endl;
+        for(const auto& l: teacher.second->getLectures()){
+            cout << l->getId() << endl;
+        }
+    }
 
 
 	/*
