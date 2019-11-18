@@ -402,6 +402,14 @@ void Schedule::checkConstraints() const{
             }
 
         }
+        // cout << "IN"<<endl;
+        // for(const auto& i: slotsSansRoom){
+        //     for(const auto& j: i){
+        //         cout << j << "  ";
+        //     }
+        //     cout << endl;
+        // }
+        // cout << "OUT"<<endl;
 
         /*
         TEACHER2
@@ -745,6 +753,19 @@ void Schedule::printSchedule(bool full = false) const {
 
     }
     cout << "L: " << lectureCount << endl;
+
+    for(const auto& lecture: lectures){
+        cout << lecture->getId() << endl;
+    }
+    cout << endl;
+
+    for(const auto& teacher: teachers){
+        cout << teacher.second->getName();
+        cout << endl;
+        for(const auto& l: teacher.second->getLectures()){
+            cout << l->getId() << endl;
+        }
+    }
 
 }
 
