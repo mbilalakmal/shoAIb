@@ -5,15 +5,37 @@
 #include<ctime>
 #include<algorithm>
 
-Algorithm::Algorithm(){
+#define POPSIZE 100
+#define MAXGEN  4000
+#define BSTSZE  10
+#define WSTSZE  10
+
+#define MRATE   0.05
+#define CRATE   0.65
+#define MSIZE   2
+#define CSIZE   2
+
+Algorithm::Algorithm(
+    const unordered_map<int, Room*>& rooms,
+    const unordered_map<string, Course*>& courses,
+    const unordered_map<string, Teacher*>& teachers,
+    const unordered_map<string, StudentSection*>& sections,
+    const vector<Lecture*>& lectures
+):
+    rooms(rooms),
+    courses(courses),
+    teachers(teachers),
+    sections(sections),
+    lectures(lectures)
+{
 
         seed = time(nullptr);
 
-        populationSize = Specs::getInstance().getPopulationSize();
-        maxGenerations = Specs::getInstance().getMaxGenerations();
+        populationSize = POPSIZE;
+        maxGenerations = MAXGEN;
 
-        bestSize    = Specs::getInstance().getBestSize();
-        worstSize   = Specs::getInstance().getWorstSize();
+        bestSize    = BSTSZE;
+        worstSize   = WSTSZE;
 
         population.resize( populationSize );
         newPopulation.resize( populationSize );
@@ -44,8 +66,11 @@ void Algorithm::initialize(){
 
     for(int i = 0; i < populationSize; i++){
         delete population[i];
-        population.at(i) = new Schedule();
-        population.at(i)->initialize(seed);
+        population.at(i) = new Schedule(
+            seed, MRATE, CRATE, MSIZE, CSIZE,
+            rooms, courses, teachers, sections, lectures
+        );
+        population.at(i)->initialize();
     }
 
     currentGeneration = 0;
@@ -57,7 +82,7 @@ void Algorithm::initialize(){
 void Algorithm::run(){
 
     while(
-        population.front()->getFitness() < 1.0 &&
+        // population.front()->getFitness() < 1.0 &&
         // bestFitness < 1.0 &&
         currentGeneration < maxGenerations
         //also a time limit to break the loop
@@ -185,8 +210,8 @@ void Algorithm::reproduction(){
     for(int i = 0; i < populationSize; i++){
 
         //pick a random chromosome's index based on fitness
-        one = rouletteSelection();
-        // one = tournamentSelection();
+        // one = rouletteSelection();
+        one = tournamentSelection();
 
         //copy it to the new generation
         delete newPopulation[i];
@@ -209,8 +234,8 @@ void Algorithm::reproduction(){
         crossover(schedule1, schedule2, seed);
 
         //mutate both chromosomes
-        schedule1.mutation(seed);
-        schedule2.mutation(seed);
+        schedule1.mutation();
+        schedule2.mutation();
 
         //copy both back to original population
         *( population.at(j) )      = schedule1;
@@ -238,8 +263,11 @@ void Algorithm::sortBestAndWorst(){
         for(; i < worstSize && it != population.rend();
             i++, it++){
             delete *( it );
-            *( it ) = new Schedule();
-            (*it)->initialize(seed);
+            *( it ) = new Schedule(
+                seed, MRATE, CRATE, MSIZE, CSIZE,
+                rooms, courses, teachers, sections, lectures
+            );
+            (*it)->initialize();
         }
 
     }

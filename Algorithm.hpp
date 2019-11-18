@@ -28,7 +28,13 @@ class Algorithm{
         double bestFitness;
         double avgFitness;
 
-        Algorithm();
+        Algorithm(
+            const unordered_map<int, Room*>&,
+            const unordered_map<string, Course*>&,
+            const unordered_map<string, Teacher*>&,
+            const unordered_map<string, StudentSection*>&,
+            const vector<Lecture*>&
+        );
 
         ~Algorithm();
 
@@ -68,6 +74,13 @@ class Algorithm{
 		//number of worst chromosomes to track
 		int		worstSize;
         
+        //Aggregated objects
+        const unordered_map<int, Room*>& rooms;
+        const unordered_map<string, Course*>& courses;
+        const unordered_map<string, Teacher*>& teachers;
+        const unordered_map<string, StudentSection*>& sections;
+        const vector<Lecture*>& lectures;
+
         //calculate relative fitness for all schedules and get avg and best
         void calculateFitness();
 
