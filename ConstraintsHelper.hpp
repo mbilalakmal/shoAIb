@@ -72,9 +72,9 @@ int weekDays(const vector< vector<int> >& slotsByDay){
 }
 
 bool oneAtATime(const vector< vector<int> >& slotsByDay){
-    
+    unordered_set<int> slotsSet;
     for(const auto& slots: slotsByDay){
-        unordered_set<int> slotsSet;
+        slotsSet.clear();
         for(const auto& slot: slots){
             bool inserted = slotsSet.insert( slot ).second;
             if( !inserted ){
