@@ -4,11 +4,11 @@
 #include<vector>
 #include<unordered_map>
 #include"Lecture.hpp"
+#include"Room.hpp"
+
 using namespace std;
 
-class Lecture;
-
-//describes a whole week's schedule in time-space slots occupied by course classes
+//describes a whole week's schedule in time-space slots occupied by lectures
 class Schedule{
 	
     //crossover occurs by randomly swapping some classes between two schedules
@@ -26,7 +26,15 @@ class Schedule{
         double  cumulativeProb;
 
         //default constructor
-		Schedule();
+		Schedule(
+            int,
+            double, double, int, int,
+            const unordered_map<int, Room*>&,
+            const unordered_map<string, Course*>&,
+            const unordered_map<string, Teacher*>&,
+            const unordered_map<string, StudentSection*>&,
+            const vector<Lecture*>&
+        );
 		
         //copy constructor
         Schedule(const Schedule&);
@@ -38,16 +46,16 @@ class Schedule{
         ~Schedule();
 
         //initialize schedule with random slots
-        void initialize(int&);
+        void initialize();
 
         //mutation occurs by randomly swapping some classes within a schedule
-        void mutation(int&);
+        void mutation();
 
         const vector< vector<Lecture*> >& getSlots() const {return slots;}
 
         const unordered_map<Lecture*, vector<int> >& getClasses() const {return classes;}
 
-		const vector<bool>& getConstraints() const {return constraints;}
+		// const vector<int>& getConstraints() const {return constraints;}
 
         double getFitness() const {return fitness;}
 
@@ -64,20 +72,47 @@ class Schedule{
         //Lecture mapped to it's slots
         unordered_map< Lecture*, vector<int> > classes;
 
+        //GA Parameters
+        const double mutationRate;
+        const double crossoverRate;
+        const int mutationSize;
+        const int crossoverSize;
+
+        //Aggregated objects
+        const unordered_map<int, Room*>& rooms;
+        const unordered_map<string, Course*>& courses;
+        const unordered_map<string, Teacher*>& teachers;
+        const unordered_map<string, StudentSection*>& sections;
+        const vector<Lecture*>& lectures;
+
+
         //used to calc fitness [true = that constraint is fulfilled]
-        vector<bool> constraints;
+        mutable vector< vector< vector<bool> > > lectureConstraints;
+        mutable vector< vector<bool> > teacherConstraints;
+        mutable vector< vector<bool> > sectionConstraints;
 
         //schedule's score for complying with constraints
         double fitness;
+
+        //seed value for schedule's random values
+        int seed;
 
         //calculate score of schedule based on given constraints
         void calculateFitness();
 
         //checks each constraint for all classes and put true/false in the vector
-        void checkConstraints();
+        void checkConstraints() const;
 
         //adds all the entries in the bool vector, multiplies, and returns a single fitness value
         double addConstraintsWeights();
+
+        Room* getRoomById(int) const;
+
+        // //helper functions to check section & teacher constraints
+        // int maxConsecutive(const vector< vector<int> >&) const;
+        // int maxDaily(const vector< vector<int> >&) const;
+        // int daysOff(const vector< vector<int> >&) const;
+        // bool oneAtATime(const vector< vector<int> >&) const;
 		
 };
 
