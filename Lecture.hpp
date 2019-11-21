@@ -2,7 +2,6 @@
 #define LECTURE
 
 #include<vector>
-#include<algorithm>
 
 #include "Course.hpp"
 #include "Teacher.hpp"
