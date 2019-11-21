@@ -4,6 +4,9 @@
 #include<vector>
 using namespace std;
 
+#include"json.hpp"
+using nlohmann::json;
+
 /*
 Describes a room with 4 attributes including availableSlots
 for room according to requirements and policies
@@ -14,19 +17,16 @@ CONSTRAINTS:
 */
 class Room{
 	
+	/*
+	these methods are used when creating room objects from json.
+	The room must have a default constructor for this purpose
+	*/
+	friend void to_json(json& , const Room&);
+	friend void from_json(const json&, Room&);
+
 	public:
 		
-		Room(
-			const string&	name,
-			int				capacity,
-			const vector<bool>&
-							availableSlots
-		):
-			id(nextId++),
-			name(name),
-			capacity(capacity),
-			availableSlots(availableSlots)
-		{}
+		Room():id(nextId++){}
 
 		int getId() const {return id;}
 		
@@ -41,18 +41,32 @@ class Room{
 		
 	private:
 
-		const int		id;
-		const string	name;
-		const int		capacity;
+		const int	id;
+		string		name;
+		int			capacity;
 
-		const vector<bool>	availableSlots;
+		vector<bool> availableSlots;
 
 		//RoomId counter to assign IDs
-		static int		nextId;
+		static int	nextId;
 		
 };
 
 //Init ID counter
 int Room::nextId = 0;
+
+void to_json(json& j, const Room& room) {
+    j = json{
+        {"name", room.name},
+        {"capacity", room.capacity},
+        {"availableSlots", room.availableSlots}
+    };
+}
+
+void from_json(const json& j, Room& room) {
+    j.at("name").get_to(room.name);
+    j.at("capacity").get_to(room.capacity);
+    j.at("availableSlots").get_to(room.availableSlots);
+}
 
 #endif
