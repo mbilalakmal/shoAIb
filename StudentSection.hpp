@@ -6,16 +6,17 @@ using namespace std;
 
 class Lecture;
 
-//maximum lectures a section can be offered
-#define MAX_S_LECT 16
-
 //maximum lectures a section can attend consecutively
 #define MAX_S_CONT_LECT 5
 
 //maximum lectures a section can attend on a day
 #define MAX_S_DAILY_LECT 7
 
+//this batch can have a day off
 #define SENIOR_YEAR 2016
+
+#include"json.hpp"
+using nlohmann::json;
 
 /*
 Describes a section with 6 attributes including offered lectures
@@ -27,23 +28,14 @@ CONSTRAINTS:
 */
 class StudentSection{
 	
+	/*
+	these methods are used when creating section objects from json.
+	The section must have a default constructor for this purpose
+	*/
+	friend void to_json(json& , const StudentSection&);
+	friend void from_json(const json&, StudentSection&);
+
 	public:
-		
-		StudentSection(
-			string			id,
-			const string&	name,
-			int				strength,
-			int				batch,
-			const string&	department
-		):
-			id(id),
-			name(name),
-			strength(strength),
-			batch(batch),
-			department(department)
-		{
-			lectures.reserve(MAX_S_LECT);
-		}
 
 		~StudentSection(){
 			//this only removes the pointers
@@ -70,15 +62,33 @@ class StudentSection{
 	
 	private:
 
-	const string	id;
-	const string	name;
-	const int		strength;
-	const int		batch;
-	const string	department;
+		string	id;
+		string	name;
+		int		strength;
+		int		batch;
+		string	department;
 
-	//lectures offered to this section
-	vector<Lecture*>	lectures;	
+		//lectures offered to this section
+		vector<Lecture*>	lectures;	
 
 };
+
+void to_json(json& j, const StudentSection& section) {
+	j = json{
+		{"id", section.id},
+		{"name", section.name},
+		{"strength", section.strength},
+		{"batch", section.batch},
+		{"department", section.department},
+	};
+}
+
+void from_json(const json& j, StudentSection& section) {
+	j.at("id").get_to(section.id);
+	j.at("name").get_to(section.name);
+	j.at("strength").get_to(section.strength);
+	j.at("batch").get_to(section.batch);
+	j.at("department").get_to(section.department);
+}
 
 #endif
