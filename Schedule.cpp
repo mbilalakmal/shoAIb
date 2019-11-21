@@ -7,16 +7,17 @@
 
 using namespace std;
 
+#define MRATE   0.05
+#define CRATE   0.65
+#define MSIZE   4
+#define CSIZE   4
+
 #define WEEKDAYS 5
 #define TOTALHOURS 8
 
 //default constructor
 Schedule::Schedule(
     int seed,
-    double mutationRate,
-    double crossoverRate,
-    int mutationSize,
-    int crossoverSize,
     const unordered_map<int, Room*>& rooms,
     const unordered_map<string, Course*>& courses,
     const unordered_map<string, Teacher*>& teachers,
@@ -24,10 +25,10 @@ Schedule::Schedule(
     const vector<Lecture*>& lectures
 ):
     seed(seed),
-    mutationRate(mutationRate),
-    crossoverRate(crossoverRate),
-    mutationSize(mutationSize),
-    crossoverSize(crossoverSize),
+    mutationRate(MRATE),
+    crossoverRate(CRATE),
+    mutationSize(MSIZE),
+    crossoverSize(CSIZE),
     rooms(rooms),
     courses(courses),
     teachers(teachers),
@@ -37,19 +38,15 @@ Schedule::Schedule(
     //resize slots vector
     slots.resize( WEEKDAYS * TOTALHOURS * rooms.size() );
 
-    // lectureConstraints.resize( lectures.size() );
-    // teacherConstraints.resize( teachers.size() );
-    // sectionConstraints.resize( sections.size() );
-
 }
 
 //copy constructor
 Schedule::Schedule(const Schedule& schedule):
-    seed(seed),
-    mutationRate(mutationRate),
-    crossoverRate(crossoverRate),
-    mutationSize(mutationSize),
-    crossoverSize(crossoverSize),
+    seed(schedule.seed),
+    mutationRate(schedule.mutationRate),
+    crossoverRate(schedule.crossoverRate),
+    mutationSize(schedule.mutationSize),
+    crossoverSize(schedule.crossoverSize),
     rooms(schedule.rooms),
     courses(schedule.courses),
     teachers(schedule.teachers),
@@ -529,108 +526,6 @@ void Schedule::checkConstraints() const{
 
     // cout << "EOC" << endl;
 }
-/*
-void Schedule::checkConstraints(){
-
-    // for(const auto& teacher: teachers){
-
-    // } RCTS
-
-
-
-    int classCounter         = 0;
-
-    //reset all constraints to TRUE(default)
-    fill(constraints.begin(), constraints.end(), 0);
-
-    int totalRooms   = rooms.size();
-    int spaceTimePerDay = TOTALHOURS * totalRooms;
-
-    //each iteration runs for one class of this schedule
-    for(const auto& classIterator: classes){
-
-        //get const pointer to course class
-        const Lecture* lecture = classIterator.first;
-
-        //flags to see if both (a section clash and a teacher clash)
-        //are found to exit searching 
-        bool sectionFound = false, teacherFound = false;
-
-        //each iteration runs for one slot of this class
-        for(const auto& i: classIterator.second){
-
-            //get coordinates from position
-            int position    = i;
-            int day         = position / spaceTimePerDay;
-            int spaceTime   = position % spaceTimePerDay;
-            int roomID      = spaceTime / TOTALHOURS;
-            int time        = spaceTime % TOTALHOURS;
-
-            Room* room      = getRoomById(roomID);
-
-            //Check for INHERENT::ROOM constraints
-            
-
-            //no more than one class DONE
-            if( slots.at(position).size() > 1 ){
-                constraints.at( classCounter + 0 ) = false;
-            }
-
-            //capacity at least equal to strength DONE
-            if( room->getCapacity() < lecture->getStrength() ){
-                constraints.at( classCounter + 1 ) = false;
-            }
-
-            
-            //check for INHERENT::SECTION & TEACHER constraints
-            
-
-            //each iteration runs for one room 
-            for(int j = 0, dayTime = day * spaceTimePerDay + time;
-                j < totalRooms && ( !sectionFound || !teacherFound );
-                j++, dayTime += TOTALHOURS)
-            {
-
-                const vector<Lecture*>& ccList = slots.at(dayTime);
-
-                //for this room check for clash with the original class [section & teacher]
-
-                for(auto iterator = ccList.begin();
-                    iterator != ccList.end() && ( !sectionFound || !teacherFound );
-                    iterator++
-                ){
-                    //dont compare class with it self
-                    if( lecture->getId() == (*iterator)->getId() ){continue;}
-                    
-                    //if original class and this class has same teacher, it's a clash
-                    if(lecture->teachersOverlap( **iterator )){
-                        teacherFound = true;}
-                        
-                    //if original class and this class has common section(s), it's a clash
-                    if(lecture->sectionsOverlap( **iterator )){
-                        sectionFound = true;}
-                        
-                }
-           }
-
-            //no other class for one section
-            if(sectionFound){
-                constraints.at( classCounter + 2 ) = false;
-            }
-
-            //no other class for one teacher
-            if(teacherFound){
-                constraints.at( classCounter + 3 ) = false;
-            }
-
-        }
-        
-        classCounter +=
-        Specs::getInstance().getNumberOfConstraints();
-
-    }
-}
-*/
 
 double Schedule::addConstraintsWeights(){
     double fitness = 0.0;
@@ -755,7 +650,7 @@ void Schedule::printSchedule(bool full = false) const {
     cout << "L: " << lectureCount << endl;
 
     for(const auto& lecture: lectures){
-        cout << lecture->getId() << endl;
+        cout << lecture->getCourse().getCourseCode() << endl;
     }
     cout << endl;
 
@@ -763,16 +658,16 @@ void Schedule::printSchedule(bool full = false) const {
         cout << teacher.second->getName();
         cout << endl;
         for(const auto& l: teacher.second->getLectures()){
-            cout << l->getId() << endl;
+            cout << l->getCourse().getCourseCode() << endl;
         }
     }
 
 }
 
-//crossover occurs by randomly swapping some classes between two schedules
+/*crossover occurs by randomly swapping some classes between two schedules
 //this is a little different from typical crossover implementations as
-//no new offsprings are created. However it still works (uncited)
-//might have to implement another
+//no new offsprings are created. However it still works i think
+*/
 
 void crossover(Schedule& schedule1, Schedule& schedule2, int &seed){
 

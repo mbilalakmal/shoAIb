@@ -1,19 +1,13 @@
 #include"Schedule.cpp"
 #include"Algorithm.hpp"
-#include"Specs.cpp"
 
 #include<ctime>
 #include<algorithm>
 
-#define POPSIZE 100
+#define POPSIZE 60
 #define MAXGEN  4000
-#define BSTSZE  10
-#define WSTSZE  10
-
-#define MRATE   0.05
-#define CRATE   0.65
-#define MSIZE   2
-#define CSIZE   2
+#define BSTSZE  6
+#define WSTSZE  6
 
 Algorithm::Algorithm(
     const unordered_map<int, Room*>& rooms,
@@ -67,8 +61,7 @@ void Algorithm::initialize(){
     for(int i = 0; i < populationSize; i++){
         delete population[i];
         population.at(i) = new Schedule(
-            seed, MRATE, CRATE, MSIZE, CSIZE,
-            rooms, courses, teachers, sections, lectures
+            seed, rooms, courses, teachers, sections, lectures
         );
         population.at(i)->initialize();
     }
@@ -82,13 +75,12 @@ void Algorithm::initialize(){
 void Algorithm::run(){
 
     while(
-        // population.front()->getFitness() < 1.0 &&
-        // bestFitness < 1.0 &&
+        bestFitness < 1.0 &&
         currentGeneration < maxGenerations
         //also a time limit to break the loop
     ){
         reproduction();
-        if(currentGeneration%100 == 0){
+        if(currentGeneration%500 == 0){
             cout << endl;
             cout << "gen: " << currentGeneration
             << " B: " << bestFitness
@@ -108,10 +100,11 @@ void Algorithm::run(){
     population.front()->printSchedule(true);
 }
 
-//calc avg and best fitness for this generation
-//and set relativeFitness and cumProb
-//the individual schedules in this population
-//will have already calculated their fitness
+/*
+calc avg and best fitness for this generation and set
+relativeFitness and cumProb the individual schedules in this
+population will have already calculated their fitness
+*/
 void Algorithm::calculateFitness(){
 
     //partially sort best And Worst
@@ -128,13 +121,13 @@ void Algorithm::calculateFitness(){
     //sum / number = avg
     avgFitness =  (double) sum / populationSize;
 
-    //set relative fitness for each schedule
-    double currentCumProb = 0.0;
-    for(auto& i: population){
-        i->relativeFitness  = (double) i->getFitness() / sum;
-        i->cumulativeProb   = currentCumProb + i->relativeFitness;
-        currentCumProb      = i->cumulativeProb;
-    }
+    //set relative fitness for each schedule [roulette]
+    // double currentCumProb = 0.0;
+    // for(auto& i: population){
+    //     i->relativeFitness  = (double) i->getFitness() / sum;
+    //     i->cumulativeProb   = currentCumProb + i->relativeFitness;
+    //     currentCumProb      = i->cumulativeProb;
+    // }
 
 }
 
@@ -163,21 +156,6 @@ int Algorithm::tournamentSelection(int selectionPressure = 10){
     int maxIndex = 0;
     //max fitness within the participants
     double maxFitness = 0.0;
-
-
-    /*
-    tournament selection with replacement
-    */
-
-    // for(int i = 0; i < selectionPressure; i++){
-    //     //pick a random index
-    //     int randex = i4_uniform_ab(0, populationSize - 1, seed);
-    //     if( population[randex]->getFitness() > maxFitness){
-    //         maxIndex    = randex;
-    //         maxFitness  = population[randex]->getFitness();
-    //     }
-    // }
-
 
     /*
     No-replacement tournament selection
@@ -264,8 +242,7 @@ void Algorithm::sortBestAndWorst(){
             i++, it++){
             delete *( it );
             *( it ) = new Schedule(
-                seed, MRATE, CRATE, MSIZE, CSIZE,
-                rooms, courses, teachers, sections, lectures
+                seed, rooms, courses, teachers, sections, lectures
             );
             (*it)->initialize();
         }

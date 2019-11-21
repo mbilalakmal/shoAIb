@@ -28,7 +28,6 @@ class Schedule{
         //default constructor
 		Schedule(
             int,
-            double, double, int, int,
             const unordered_map<int, Room*>&,
             const unordered_map<string, Course*>&,
             const unordered_map<string, Teacher*>&,
@@ -79,17 +78,25 @@ class Schedule{
         const int crossoverSize;
 
         //Aggregated objects
-        const unordered_map<int, Room*>& rooms;
-        const unordered_map<string, Course*>& courses;
-        const unordered_map<string, Teacher*>& teachers;
-        const unordered_map<string, StudentSection*>& sections;
-        const vector<Lecture*>& lectures;
+            const unordered_map<int, Room*>&
+        rooms;
+            const unordered_map<string, Course*>&
+        courses;
+            const unordered_map<string, Teacher*>&
+        teachers;
+            const unordered_map<string, StudentSection*>&
+        sections;
+            const vector<Lecture*>&
+        lectures;
 
 
         //used to calc fitness [true = that constraint is fulfilled]
-        mutable vector< vector< vector<bool> > > lectureConstraints;
-        mutable vector< vector<bool> > teacherConstraints;
-        mutable vector< vector<bool> > sectionConstraints;
+            mutable vector< vector< vector<bool> > >
+        lectureConstraints;
+            mutable vector< vector<bool> >
+        teacherConstraints;
+            mutable vector< vector<bool> >
+        sectionConstraints;
 
         //schedule's score for complying with constraints
         double fitness;
