@@ -4,14 +4,6 @@
 #include"Schedule.hpp"
 
 /*
-The info related to uni (rooms, courses, etc) is accessed from
-Specs::getInstance().getCourseClasses(), get___byId(T) etc
-
-The info related to running algorithm (populationSize, generations, 
-mutationRate, etc) is accessed from Specs::getInstance().getMutationRate() etc
-*/
-
-/*
 STEPS TO RUN:
 
 */
@@ -69,17 +61,22 @@ class Algorithm{
         int maxGenerations;
 
 		//number of best chromosomes to track
-		int		bestSize;
+		int bestSize;
 
 		//number of worst chromosomes to track
-		int		worstSize;
+		int worstSize;
         
         //Aggregated objects
-        const unordered_map<int, Room*>& rooms;
-        const unordered_map<string, Course*>& courses;
-        const unordered_map<string, Teacher*>& teachers;
-        const unordered_map<string, StudentSection*>& sections;
-        const vector<Lecture*>& lectures;
+            const unordered_map<int, Room*>
+        rooms;
+            const unordered_map<string, Course*>
+        courses;
+            const unordered_map<string, Teacher*>
+        teachers;
+            const unordered_map<string, StudentSection*>
+        sections;
+            const vector<Lecture*>
+        lectures;
 
         //calculate relative fitness for all schedules and get avg and best
         void calculateFitness();
@@ -91,11 +88,10 @@ class Algorithm{
         int tournamentSelection(int);
 
         /*
-        (1)selects chromosome from current generation and adds
-        them to the new population (copy assignment) based on their fitness
-        (2)performs crossovers population/2 times
-        (3)performs mutations on each crossovered chromosome in last step
-        (4)insert them back into current generation (the old generation is lost)
+        (1)selects best chromosomes from current population using selectionFunction
+        (2)performs [populationSize/2] crossovers
+        (3)performs mutations on each crossovered chromosome in step (2)
+        (4)insert them back into current generation (the old generation is overwritten)
         */
        void reproduction();
 
