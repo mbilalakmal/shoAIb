@@ -10,11 +10,6 @@
 
 using namespace std;
 
-//maximum teachers assigned to a lecture
-#define MAXTEACHERS 2
-//maximum sections enrolled in a lecture
-#define MAXSECTIONS 10
-
 /*
 Describes a lecture with 5 attributes including assigned
 teachers and enrolled sections with cumulative strength
@@ -24,15 +19,8 @@ class Lecture{
 	public:
 		
 		Lecture(
-			Course*	course
-		):
-			id(nextId++),
-			course(course),
-			strength(0)
-		{
-			teachers.reserve(MAXTEACHERS);
-			sections.reserve(MAXSECTIONS);
-		}
+			Course*	course, const string& id
+		): course(course), id(id), strength(0){}
 		
 		~Lecture(){
 			//this only removes the pointers
@@ -62,37 +50,7 @@ class Lecture{
 			teachers.push_back(teacher);
 		}
 
-		//Returns whether another lecture has a common section
-		bool sectionsOverlap(const Lecture& lecture ) const {
-
-			auto &sections2 = lecture.getSections();
-			for(const auto& section: sections){
-				if(
-					sections2.end() !=
-					find(sections2.begin(), sections2.end(), section)
-				){	return true;}
-			}
-
-			//No common section
-			return false;
-		}
-
-		//Returns whether another lecture has a common teacher
-		bool teachersOverlap(const Lecture& lecture ) const {
-
-			auto &teachers2 = lecture.getTeachers();
-			for(const auto& teacher: teachers){
-				if(
-					teachers2.end() !=
-					find(teachers2.begin(), teachers2.end(), teacher)
-				){	return true;}
-			}
-
-			//No common teacher
-			return false;
-		}
-
-		int getId() const {return id;}
+		const string& getId() const {return id;}
 
 		int getStrength() const {return strength;}
 		
@@ -101,16 +59,13 @@ class Lecture{
 		const vector<Teacher*>& getTeachers() const {return teachers;}
 
 		const vector<StudentSection*>& getSections() const {return sections;}
-
-		//Reset ID counter to 0
-		static void RestartIDs() {nextId = 0;}
 	
 	private:
 
-		const int		id;
-		int				strength;
+		const string id;
+		int strength;
 
-		const Course*	course;
+		const Course* course;
 		
 		//teacher(s) assigned to this lecture
 		vector<Teacher*> teachers;
@@ -118,12 +73,6 @@ class Lecture{
 		//section(s) enrolled in this lecture
 		vector<StudentSection*> sections;
 
-		//LectureId counter to assign IDs
-		static int		nextId;
-
 };
-
-//Init ID counter
-int Lecture::nextId = 0;
 
 #endif
