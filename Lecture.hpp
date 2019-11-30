@@ -1,77 +1,61 @@
 #ifndef LECTURE
 #define LECTURE
 
-#include<vector>
+#include <string>           //string
+#include <vector>           //vector
+#include <unordered_map>    //unordered_map
+#include "json.hpp"         //nlohmann::json
 
-#include "Course.hpp"
-#include "Teacher.hpp"
-#include "StudentSection.hpp"
-
-using namespace std;
+typedef std::vector<std::vector<bool>> AVAILABOOL;
 
 /*
-Describes a lecture with 5 attributes including assigned
-teachers and enrolled sections with cumulative strength
+Describes a lecture : a course, teacher(s), and section(s)
 */
 class Lecture{
-	
-	public:
-		
-		Lecture(
-			Course*	course, const string& id
-		): course(course), id(id), strength(0){}
-		
-		~Lecture(){
-			//this only removes the pointers
-			//from vector without deleting
-			teachers.clear();
-			sections.clear();
-		}
 
-		/*
-		add this lecture to the given section & add
-		the section to this lecture's included sections
-		*/
-		void addSection(StudentSection* section){
-			section->addLecture(this);
-			sections.push_back(section);
+    //creates C++ Lecture object from json Lecture object
+    friend void from_json(const nlohmann::json&, Lecture&);
 
-			//add the section's strength
-			strength += section->getStrength();
-		}
+    public:
 
-		/*
-		add this lecture to the given teacher & add
-		the teacher to this lecture's assigned sections
-		*/
-		void addTeacher(Teacher* teacher){
-			teacher->addLecture(this);
-			teachers.push_back(teacher);
-		}
-
-		const string& getId() const {return id;}
+        const std::string& getId() const {return id;}
 
 		int getStrength() const {return strength;}
 		
-		const Course& getCourse() const {return *course;}
+		const std::string& getCourse() const {return course;}
 
-		const vector<Teacher*>& getTeachers() const {return teachers;}
+		const std::vector<std::string>& getTeachers() const {return teachers;}
 
-		const vector<StudentSection*>& getSections() const {return sections;}
-	
-	private:
+		const std::vector<std::string>& getSections() const {return sections;}
 
-		const string id;
-		int strength;
+        const AVAILABOOL& getAvailableSlots() const {return availableSlots;}
 
-		const Course* course;
-		
-		//teacher(s) assigned to this lecture
-		vector<Teacher*> teachers;
+        const std::vector<std::string>& getAvailableRooms() const {return availableRooms;}
 
-		//section(s) enrolled in this lecture
-		vector<StudentSection*> sections;
+        void setAvailableSlots(AVAILABOOL availableSlots){this->availableSlots = availableSlots;}
+
+        void setAvailableRooms(std::vector<std::string> availableRooms){this->availableRooms = availableRooms;}
+
+    private:
+
+        std::string id;
+        int         strength;
+
+        std::string course;
+        std::vector<std::string> teachers;
+        std::vector<std::string> sections;
+
+        AVAILABOOL availableSlots;
+        std::vector<std::string> availableRooms;
 
 };
+
+void from_json(const nlohmann::json& jlecture, Lecture& lecture) {
+	jlecture.at("id").get_to(lecture.id);
+	jlecture.at("strength").get_to(lecture.strength);
+    jlecture.at("courseId").get_to(lecture.course);
+    jlecture.at("teacherIds").get_to(lecture.teachers);
+    jlecture.at("sectionIds").get_to(lecture.sections);
+}
 
 #endif
