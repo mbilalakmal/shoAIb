@@ -1,18 +1,18 @@
 #ifndef COURSE
 #define COURSE
 
-#include<vector>
-using namespace std;
+#include <string>           //string
+#include <vector>           //vector
+#include <unordered_map>    //unordered_map
+#include "json.hpp"         //nlohmann::json
 
-#include"json.hpp"
-using nlohmann::json;
+typedef std::vector<std::vector<bool>> AVAILABOOL;
 
 /*
-Describes a course offered with 9 attributes including
-availableSlots for course according to requirements & policies
+Describes a course offered
 
 CONSTRAINTS:
-1. Day, Room, & Time assigned can be specified
+1. Day, Room, & Time availability can be specified
 2. Lab courses should have continuous slots
 3. Theory courses should be split across days
 4. Theory courses should be schedule before their
@@ -24,83 +24,69 @@ CONSTRAINTS:
 */
 class Course{
 
-	/*
-	these methods are used when creating course objects from json.
-	The course must have a default constructor for this purpose
-	*/
-	friend void to_json(json& , const Course&);
-	friend void from_json(const json&, Course&);
+    //creates C++ Course object from json Course object
+    friend void from_json(const nlohmann::json&, Course&);
 
-	public:
-		
-		const string& getId() const {return id;}
+    public:
 
-		const string& getCourseCode() const {return courseCode;}
+        const std::string& getId() const {return id;}
 
-		const string& getDepartment() const {return department;}
+        const std::string& getCourseCode() const {return courseCode;}
 
-		int getBatch() const {return batch;}
-		
-		const string& getSchool() const {return school;}
+        const std::string& getDepartment() const {return department;}
 
-		int getDuration() const {return duration;}
+        int getDuration() const {return duration;}
 
-		bool getIsCoreCourse() const {return isCoreCourse;}
+        bool getIsCoreCourse() const {return isCoreCourse;}
 
-		bool getIsLabCourse() const { return isLabCourse;}
+        bool getIsLabCourse() const {return isLabCourse;}
 
-		bool getIsRepeatCourse() const { return isRepeatCourse;}
+        const std::vector<std::string>& getPrerequisiteIds() const {return prerequisiteIds;}
 
-		bool getAvailableSlot(int position) const {return availableSlots[position];}
+        const std::vector<std::string>& getElectivePairIds() const {return electivePairIds;}
 
-	private:
-		
-		string	id;
-		string	courseCode;
-		string	department;
-		int		batch;
-		string	school;
-		
-		int		duration;
-		
-		bool	isCoreCourse;
-		bool	isLabCourse;
-		bool	isRepeatCourse;
+        const std::string& getTheoryCourseId() const {return theoryCourseId;}
 
-		vector<bool> availableSlots;
-	
+        const AVAILABOOL& getAvailableSlots() const {return availableSlots;}
+
+        const std::vector<std::string>& getAvailableRooms() const {return availableRooms;}
+
+        void addElectivePair(std::string pair){electivePairIds.push_back(pair);}
+
+    private:
+
+        std::string id;
+        std::string courseCode;
+        std::string department;
+        int duration;
+
+        bool isCoreCourse;
+        bool isLabCourse;
+
+        std::vector<std::string> prerequisiteIds;
+        std::vector<std::string> electivePairIds;
+        std::string theoryCourseId;
+
+        AVAILABOOL availableSlots;
+        std::vector<std::string> availableRooms;
+
 };
 
-void to_json(json& j, const Course& course) {
-	j = json{
-		{"id", course.id},
-		{"courseCode", course.courseCode},
-		{"department", course.department},
-		{"batch", course.batch},
+void from_json(const nlohmann::json& jcourse, Course& course) {
+	jcourse.at("id").get_to(course.id);
+	jcourse.at("courseCode").get_to(course.courseCode);
+	jcourse.at("department").get_to(course.department);
+    jcourse.at("duration").get_to(course.duration);
 
-		{"duration", course.duration},
+	jcourse.at("theoryCourseId").get_to(course.theoryCourseId);
+    jcourse.at("prerequisiteIds").get_to(course.prerequisiteIds);
 
-		{"isCoreCourse", course.isCoreCourse},
-		// {"isLabCourse", course.isLabCourse},
-		{"isRepeatCourse", course.isRepeatCourse},
+    course.isLabCourse = ! course.theoryCourseId.empty();
+    jcourse.at("isCoreCourse").get_to(course.isCoreCourse);
+	jcourse.at("availableSlots").get_to(course.availableSlots);
+	jcourse.at("availableRooms").get_to(course.availableRooms);
 
-		{"availableSlots", course.availableSlots},
-	};
-}
-
-void from_json(const json& j, Course& course) {	
-	j.at("id").get_to(course.id);
-	j.at("courseCode").get_to(course.courseCode);
-	j.at("department").get_to(course.department);
-	j.at("batch").get_to(course.batch);
-
-	j.at("duration").get_to(course.duration);
-
-	j.at("isCoreCourse").get_to(course.isCoreCourse);
-	// j.at("isLabCourse").get_to(course.isLabCourse);
-	j.at("isRepeatCourse").get_to(course.isRepeatCourse);
-
-	j.at("availableSlots").get_to(course.availableSlots);
+    std::sort(course.availableRooms.begin(), course.availableRooms.end());
 }
 
 #endif
