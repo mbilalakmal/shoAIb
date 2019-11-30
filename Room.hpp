@@ -1,72 +1,50 @@
 #ifndef ROOM
 #define ROOM
 
-#include<vector>
-using namespace std;
+#include <string>           //string
+#include <vector>           //vector
+#include <unordered_map>    //unordered_map
+#include "json.hpp"         //nlohmann::json
 
-#include"json.hpp"
-using nlohmann::json;
+typedef std::vector<std::vector<bool>> AVAILABOOL;
 
 /*
-Describes a room with 4 attributes including availableSlots
-for room according to requirements and policies
+Describes a room where lectures can be scheduled
 
 CONSTRAINTS:
-1. Day & Time available can be specified
-2. Room capacity should be greater than students' strength
+1. Day & Time availability can be specified
+2. Room capacity should be greater than lecture's strength
 */
 class Room{
-	
-	/*
-	these methods are used when creating room objects from json.
-	The room must have a default constructor for this purpose
-	*/
-	friend void to_json(json& , const Room&);
-	friend void from_json(const json&, Room&);
 
-	public:
-		
-		Room():id(nextId++){}
+    //creates C++ Room object from json Room object
+    friend void from_json(const nlohmann::json&, Room&);
 
-		int getId() const {return id;}
-		
-		const string& getName() const {return name;}
+    public:
 
-		int getCapacity() const {return capacity;}
+        const std::string& getId() const {return id;}
 
-		bool getAvailableSlot(int position) const {return availableSlots[position];}
+        const std::string& getName() const {return name;}
 
-		//Reset ID counter to 0
-		static void restartIDs() {nextId = 0;}
-		
-	private:
+        int getCapacity() const {return capacity;}
 
-		const int	id;
-		string		name;
-		int			capacity;
+        const AVAILABOOL& getAvailableSlots() const {return availableSlots;}
 
-		vector<bool> availableSlots;
+    private:
 
-		//RoomId counter to assign IDs
-		static int	nextId;
-		
+        std::string id;
+        std::string name;
+        int capacity;
+
+        AVAILABOOL availableSlots;
+
 };
 
-//Init ID counter
-int Room::nextId = 0;
-
-void to_json(json& j, const Room& room) {
-    j = json{
-        {"name", room.name},
-        {"capacity", room.capacity},
-        {"availableSlots", room.availableSlots}
-    };
-}
-
-void from_json(const json& j, Room& room) {
-    j.at("name").get_to(room.name);
-    j.at("capacity").get_to(room.capacity);
-    j.at("availableSlots").get_to(room.availableSlots);
+void from_json(const nlohmann::json& jroom, Room& room){
+    jroom.at("id").get_to(room.id);
+    jroom.at("name").get_to(room.name);
+    jroom.at("capacity").get_to(room.capacity);
+    jroom.at("availableSlots").get_to(room.availableSlots);
 }
 
 #endif
